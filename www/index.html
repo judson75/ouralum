@@ -37,24 +37,44 @@
     * Create your own at http://cspisawesome.com
     -->
     <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
-
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
     <title>Hello World</title>
 </head>
 
 <body>
     <div class="app">
-        <button class="btn">Search...</button>
-        <button class="btn">My Alums</button>
-      
-        <h1>PhoneGap</h1>
-        <div id="registration" class="blink">
-            <p class="event waiting">Requesting Registration ID</p>
-            <p class="event received">Registered</p>
+        <button class="btn" id="" data-role="none">Search...</button>
+        <button class="btn" data-role="none">My Alums</button>
+      	<button class="btn" data-role="none" id="inviteMembersBtn">Invite Members</button>
+        <div id="registration">
+            
         </div>
     </div>
+
+	<!-- Dialog only page 
+	<div data-role="dialog" id="dialog">
+	  	<div data-role="header">
+			<h1>Dialog Only Page</h1>
+	  	</div>
+	  	<div data-role="content">
+			<p>I can only be served as a dialog, and I don't need a data-rel="dialog" attribute on a link</p>
+	  	</div>
+	</div>-->
+	<div data-role="modal" id="invite-members">
+	  	<div data-role="header">
+			<h1>Invite Alum Members</h1>
+			<div data-role="close"><i class="fa fa-times" aria-hidden="true"></i></div>
+	  	</div>
+	  	<div data-role="content"></div>
+	</div>
+   
+   
     <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript">
         app.initialize();
     </script>

@@ -107,13 +107,33 @@ function onSuccess(contacts) {
 			contacts_html += contacts[i].phoneNumbers[0].value + "<br>\n";	
 		}
 	}
-	var parentElement = document.getElementById('registration');
-	var receivedElement = parentElement.querySelector('.received');
-	document.getElementById('registration').innerHTML = contacts_html;
+	//var parentElement = document.getElementById('registration');
+	//var receivedElement = parentElement.querySelector('.received');
+	//document.getElementById('registration').innerHTML = contacts_html;
+	//$("#lnkDialog").click();
+	$('#invite-members').find('[data-role="content"]').html(contacts_html);
 }
 
 // onError: Failed to get the contacts
 //
 function onError(contactError) {
 	alert('onError!');
+}
+
+$(document).on('click', '#inviteMembersBtn', function () {
+	showModal('invite-members');
+});
+
+$(document).on('click', '[data-role="close"]', function () {
+	hideModal($(this).parent('div').parent('div').attr('id'));
+});
+
+function showModal(id) {
+	$('#' + id).show();
+	$('body').append('<div class="page-overlay"></div>');
+}
+
+function hideModal(id) {
+	$('#' + id).hide();
+	$('.page-overlay').remove();
 }
