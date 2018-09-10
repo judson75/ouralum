@@ -97,6 +97,7 @@ var app = {
 };
 
 function onSuccess(contacts) {
+	//Must ajax back to site to compare contacts
 	var contacts_html = '<div id="clist"><p>Choose Who To Send An Invite To:</p><form><ul>';
 	for (var i = 0; i < contacts.length; i++) {
 		contacts_html += '<li>';
