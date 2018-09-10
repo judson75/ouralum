@@ -97,16 +97,29 @@ var app = {
 };
 
 function onSuccess(contacts) {
-	var contacts_html = '';
+	var contacts_html = '<div id="clist"><p>Choose Who To Send An Invite To:</p><form><ul>';
 	for (var i = 0; i < contacts.length; i++) {
-		contacts_html += contacts[i].displayName;
+		contacts_html += '<li>';
+		contacts_html += '<span class="clist-select">';
+		contacts_html += '<select name="flip-3" id="flip-3" data-role="flipswitch" data-mini="true">';
+		contacts_html += '<option value="off">No</option>';
+		contacts_html += '<option value="on">Yes</option>';
+		contacts_html += '</select>';
+		contacts_html += '</span>';
+		contacts_html += '<span class="clist-data">';
+		contacts_html += '<span class="clist-name">' + contacts[i].displayName + '</span>';
+		contacts_html += '<span class="clist-contact">';
 		if(contacts[i].emails !== null) {
 			contacts_html += contacts[i].emails[0].value + "<br>\n";	
 		}
 		if(contacts[i].phoneNumbers !== null) {
 			contacts_html += contacts[i].phoneNumbers[0].value + "<br>\n";	
 		}
+		contacts_html += '</span>';
+		contacts_html += '</span>';
+		contacts_html += '</li>';
 	}
+	contacts_html += '</ul></form></div>';
 	//var parentElement = document.getElementById('registration');
 	//var receivedElement = parentElement.querySelector('.received');
 	//document.getElementById('registration').innerHTML = contacts_html;
