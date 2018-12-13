@@ -39,11 +39,11 @@ var app = {
 		//var myContact = navigator.contacts.create({"displayName": "Test User"});
         //myContact.note = "This contact has a note.";
         //alert("The contact, " + myContact.displayName + ", note: " + myContact.note);
-		var options = new ContactFindOptions();
-		options.multiple = true;
-        options.filter = "";
-        var filter = ["displayName", "addresses", "emails", "phoneNumbers"];
-        navigator.contacts.find(filter, onSuccess, onError, options);
+//		var options = new ContactFindOptions();
+	//	options.multiple = true;
+       // options.filter = "";
+        //var filter = ["displayName", "addresses", "emails", "phoneNumbers"];
+      //  navigator.contacts.find(filter, onSuccess, onError, options);
 
     },
     setupPush: function() {
@@ -98,11 +98,21 @@ var app = {
 
 function onSuccess(contacts) {
 	//Must ajax back to site to compare contacts
+/*
+		$.ajax({
+			type: "GET",
+			url: "https://ouralum.com/api/v1/",
+			success: function (data) {
+				alert("YES");
+			},
+			error: 
+		}) 
+*/		
 	var contacts_html = '<div id="clist"><p>Choose Who To Send An Invite To:</p><form><ul>';
 	for (var i = 0; i < contacts.length; i++) {
 		contacts_html += '<li>';
 		contacts_html += '<span class="clist-select">';
-		contacts_html += '<select name="flip-3" id="flip-3" data-role="flipswitch" data-mini="true">';
+		contacts_html += '<select name="import_' + i + '" id="import-' + i + '" data-role="flipswitch" data-mini="true" data-theme="b">';
 		contacts_html += '<option value="off">No</option>';
 		contacts_html += '<option value="on">Yes</option>';
 		contacts_html += '</select>';
@@ -125,7 +135,10 @@ function onSuccess(contacts) {
 	//var receivedElement = parentElement.querySelector('.received');
 	//document.getElementById('registration').innerHTML = contacts_html;
 	//$("#lnkDialog").click();
-	$('#invite-members').find('[data-role="content"]').html(contacts_html);
+	//$('#invite-members').find('[data-role="content"]').html(contacts_html);
+	/*$('#invite-members').find('[data-role="content"]').html(contacts_html);
+	$('#invite-members').find('.app').html(contacts_html);*/
+	$('.app').html(contacts_html);
 }
 
 // onError: Failed to get the contacts
@@ -133,6 +146,17 @@ function onSuccess(contacts) {
 function onError(contactError) {
 	alert('onError!');
 }
+
+$(document).on( "pagecreate", "#invite-members", function(event) {
+  	//alert("BAMMM");
+	//Get contact....
+	var options = new ContactFindOptions();
+	options.multiple = true;
+	options.filter = "";
+	var filter = ["displayName", "addresses", "emails", "phoneNumbers"];
+	navigator.contacts.find(filter, onSuccess, onError, options);
+});
+
 
 $(document).on('click', '#inviteMembersBtn', function () {
 	showModal('invite-members');
@@ -151,3 +175,5 @@ function hideModal(id) {
 	$('#' + id).hide();
 	$('.page-overlay').remove();
 }
+
+
