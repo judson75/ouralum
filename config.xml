@@ -2,7 +2,7 @@
 <widget id="com.ouralum.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>OurAlum</name>
     <description>
-        Push sample application that receives push notifications.
+        OurAlum App.
     </description>
     <author email="support@phonegap.com" href="http://phonegap.com">
         PhoneGap Team
