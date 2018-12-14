@@ -50,7 +50,7 @@ var app = {
         console.log('calling push init');
         var push = PushNotification.init({
             "android": {
-                "senderID": "XXXXXXXX"
+                "senderID": "1020842847290"
             },
             "browser": {},
             "ios": {
@@ -138,7 +138,7 @@ function onSuccess(contacts) {
 	//$('#invite-members').find('[data-role="content"]').html(contacts_html);
 	/*$('#invite-members').find('[data-role="content"]').html(contacts_html);
 	$('#invite-members').find('.app').html(contacts_html);*/
-	$('.app').html(contacts_html);
+	$('#contact-list').html(contacts_html);
 }
 
 // onError: Failed to get the contacts
@@ -148,7 +148,6 @@ function onError(contactError) {
 }
 
 $(document).on( "pagecreate", "#invite-members", function(event) {
-  	//alert("BAMMM");
 	//Get contact....
 	var options = new ContactFindOptions();
 	options.multiple = true;
@@ -175,5 +174,12 @@ function hideModal(id) {
 	$('#' + id).hide();
 	$('.page-overlay').remove();
 }
+
+function setStorage(){ 
+
+}
+
+//localStorage.setItem('colorSetting', '#a4509b');
+
 
 

@@ -20,43 +20,25 @@
 	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css" />
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <title>Our Alum</title>
+    <title>Our Alum - Alumns</title>
 </head>
 
 <body>
-	<div data-role="page" id="home">
-		<div class="app">
-			<button class="btn" id="" data-role="none">Search...</button>
-			<a href="alumns.html" class="btn" data-role="none" data-transition="slide">My Alums</a>
-			<a href="invite-members.html" class="btn" data-role="none" data-transition="slide">Invite Members</a>
-			<div id="registration">
-
-			</div>
+	<div data-role="page" id="alumns-page">
+		<div class="page-header">
+			<div id="header-left"><a href="index.html" data-role="none" data-transition="slide" data-direction="reverse"><i class="fa fa-home" aria-hidden="true"></i></a></div>
+			<div id="logo"><a href="index.html" data-role="none" data-transition="slide" data-direction="reverse"><img src="img/alum_logo.jpg"></a></div>
+			<div id="header-right"></div>
 		</div>
-
-		<!-- Dialog only page 
-		<div data-role="dialog" id="dialog">
-			<div data-role="header">
-				<h1>Dialog Only Page</h1>
-			</div>
-			<div data-role="content">
-				<p>I can only be served as a dialog, and I don't need a data-rel="dialog" attribute on a link</p>
-			</div>
+		<div id="alum-list" class="app-page">
+			<ul>
+				<li>
+					<span class="alumn-logo"><img src="https://ouralum.com/images/alum_group_images/kappa-sigma-fraternity-v.jpg"></span>
+					<span class="alumn-title"><a href="alumn.html" data-role="none" data-transition="slide">Delta-Xi - University of Mississippi</a></span>
+					<span class="alumn-count">2203 members</span>
+				</li>
+			</ul>
 		</div>
-		<div data-role="modal" id="invite-members">
-			<div data-role="header">
-				<h1>Invite Alum Members</h1>
-				<div data-role="close"><i class="fa fa-times" aria-hidden="true"></i></div>
-			</div>
-			<div data-role="content">
-
-				<label for="flip-3">Flip toggle switch:</label>
-				<select name="flip-3" id="flip-3" data-role="flipswitch" data-mini="true">
-				<option value="off">Off</option>
-				<option value="on">On</option>
-				</select>
-			</div>
-		</div>-->
 	</div>
    
     <script type="text/javascript" src="cordova.js"></script>
