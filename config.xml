@@ -2,9 +2,9 @@
 <widget id="com.ouralum.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>OurAlum</name>
     <description>
-        OurAlum App.
+        OurAlum App v1.0
     </description>
-    <author email="support@phonegap.com" href="http://phonegap.com">
+    <author email="judsonc75@gmail.com" href="http://ouralum.com">
         PhoneGap Team
     </author>
     <content src="index.html" />
