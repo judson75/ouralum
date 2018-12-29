@@ -23,15 +23,11 @@ var app = {
         //Check Login
         var oa_user_id = getStorage('oa_user_id');
         alert("USER: " + oa_user_id);
-        if(oa_user_id == '' || oa_user_id == null) {
-        	var html = $('#login-section-template').html();
-        	alert("HTML: " + html);
+        if(oa_user_id == '' || oa_user_id == null || oa_user_id == 1) {
+          	var html = '';	
+        	html = $('#login-section-template').html();
         	$('#registration').html(html);
         	$('#home-buttons').hide();
-        }
-        else {
-        	alert("HERE TOO!");
-        	$('#home-buttons').show();
         }
 		//var myContact = navigator.contacts.create({"displayName": "Test User"});
         //myContact.note = "This contact has a note.";
@@ -62,15 +58,11 @@ var app = {
         push.on('registration', function(data) {
             console.log('registration event: ' + data.registrationId);
 
-            var oldRegId = getStorage('registrationId');
+            var oldRegId = localStorage.getItem('registrationId');
             if (oldRegId !== data.registrationId) {
                 // Save new registration ID
                 setStorage('registrationId', data.registrationId);
                 // Post registrationId to your app server as the value has changed
-                var oa_user_id = getStorage('oa_user_id');
-                if(oa_user_id == '' || oa_user_id == null) {
-                	setUserToken(oa_user_id, data.registrationId);
-                }
             }
         });
 
@@ -153,15 +145,13 @@ $(document).on( "click", ".loginBtn", function() {
 	});
 	 
 	request.done(function( data ) {
-		alert(data );
+		//alert(data );
 		obj = $.parseJSON( data );
 		if(obj.code === 1) {
 			//login, save user...forward to home...
-			setStorage('oa_user_id', obj.data.user_id);
-			$('#registration').html('');
-        	$('#home-buttons').show();
-			var token = getStorage('registrationId');
-            setUserToken(oa_user_id, token);
+			 setStorage('oa_user_id', obj.data.user_id);
+			 $('#registration').html('');
+        	 $('#home-buttons').show();
 		}
 		else {
 			//show error
@@ -174,11 +164,11 @@ $(document).on( "click", ".loginBtn", function() {
 	});
 });
 
-$(document).on( "click", ".logoutBtn", function() {
+$(document).on( "click", ".loginoutBtn", function() {
 	deleteStorage('oa_user_id');
-	var html = $('#login-section-template').html();
-	$('#registration').html(html);
-    $('#home-buttons').hide();
+	var html = '';	
+	html = $('#login-section-template').html();
+	$('.app').html(html);
 
 });
 
@@ -199,27 +189,6 @@ $(document).on('click', '#inviteMembersBtn', function () {
 $(document).on('click', '[data-role="close"]', function () {
 	hideModal($(this).parent('div').parent('div').attr('id'));
 });
-
-function setUserToken(oa_user_id, token) {
-	var request = $.ajax({
-		url: serviceURL + 'token',
-	  	method: "POST",
-	  	data: { user_id : oa_user_id , token: token },
-	  	dataType: "html"
-	});
-	 
-	request.done(function( data ) {
-		alert(data );
-		obj = $.parseJSON( data );
-		if(obj.code === 1) {
-			//
-		}
-		else {
-			//show error
-			
-		}
-	});
-}
 
 function showModal(id) {
 	$('#' + id).show();

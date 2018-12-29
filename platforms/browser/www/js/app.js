@@ -1,21 +1,5 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+var serviceURL = 'https://ouralum.com/api/v1/';
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -36,6 +20,19 @@ var app = {
         console.log('Received Device Ready Event');
         console.log('calling setup push');
         app.setupPush();
+        //Check Login
+        var oa_user_id = getStorage('oa_user_id');
+        alert("USER: " + oa_user_id);
+        if(oa_user_id == '' || oa_user_id == null) {
+        	var html = $('#login-section-template').html();
+        	alert("HTML: " + html);
+        	$('#registration').html(html);
+        	$('#home-buttons').hide();
+        }
+        else {
+        	alert("HERE TOO!");
+        	$('#home-buttons').show();
+        }
 		//var myContact = navigator.contacts.create({"displayName": "Test User"});
         //myContact.note = "This contact has a note.";
         //alert("The contact, " + myContact.displayName + ", note: " + myContact.note);
@@ -43,7 +40,7 @@ var app = {
 	//	options.multiple = true;
        // options.filter = "";
         //var filter = ["displayName", "addresses", "emails", "phoneNumbers"];
-      //  navigator.contacts.find(filter, onSuccess, onError, options);
+      //  navigator.contacts.find(filter, onContactSuccess, onError, options);
 
     },
     setupPush: function() {
@@ -65,19 +62,16 @@ var app = {
         push.on('registration', function(data) {
             console.log('registration event: ' + data.registrationId);
 
-            var oldRegId = localStorage.getItem('registrationId');
+            var oldRegId = getStorage('registrationId');
             if (oldRegId !== data.registrationId) {
                 // Save new registration ID
-                localStorage.setItem('registrationId', data.registrationId);
+                setStorage('registrationId', data.registrationId);
                 // Post registrationId to your app server as the value has changed
+                var oa_user_id = getStorage('oa_user_id');
+                if(oa_user_id == '' || oa_user_id == null) {
+                	setUserToken(oa_user_id, data.registrationId);
+                }
             }
-
-            var parentElement = document.getElementById('registration');
-            var listeningElement = parentElement.querySelector('.waiting');
-            var receivedElement = parentElement.querySelector('.received');
-
-            listeningElement.setAttribute('style', 'display:none;');
-            receivedElement.setAttribute('style', 'display:block;');
         });
 
         push.on('error', function(e) {
@@ -96,7 +90,7 @@ var app = {
     }
 };
 
-function onSuccess(contacts) {
+function onContactSuccess(contacts) {
 	//Must ajax back to site to compare contacts
 /*
 		$.ajax({
@@ -147,13 +141,54 @@ function onError(contactError) {
 	alert('onError!');
 }
 
+$(document).on( "click", ".loginBtn", function() {
+	var username = $('#user_name').val();
+	var password = $('#user_password').val();
+	//ajax for login...
+	var request = $.ajax({
+		url: serviceURL + 'login',
+	  	method: "POST",
+	  	data: { username : username, password : password },
+	  	dataType: "html"
+	});
+	 
+	request.done(function( data ) {
+		alert(data );
+		obj = $.parseJSON( data );
+		if(obj.code === 1) {
+			//login, save user...forward to home...
+			setStorage('oa_user_id', obj.data.user_id);
+			$('#registration').html('');
+        	$('#home-buttons').show();
+			var token = getStorage('registrationId');
+            setUserToken(oa_user_id, token);
+		}
+		else {
+			//show error
+			
+		}
+	});
+	 
+	request.fail(function( jqXHR, textStatus ) {
+	  alert( "Request failed: " + textStatus );
+	});
+});
+
+$(document).on( "click", ".logoutBtn", function() {
+	deleteStorage('oa_user_id');
+	var html = $('#login-section-template').html();
+	$('#registration').html(html);
+    $('#home-buttons').hide();
+
+});
+
 $(document).on( "pagecreate", "#invite-members", function(event) {
 	//Get contact....
 	var options = new ContactFindOptions();
 	options.multiple = true;
 	options.filter = "";
 	var filter = ["displayName", "addresses", "emails", "phoneNumbers"];
-	navigator.contacts.find(filter, onSuccess, onError, options);
+	navigator.contacts.find(filter, onContactSuccess, onError, options);
 });
 
 
@@ -165,6 +200,27 @@ $(document).on('click', '[data-role="close"]', function () {
 	hideModal($(this).parent('div').parent('div').attr('id'));
 });
 
+function setUserToken(oa_user_id, token) {
+	var request = $.ajax({
+		url: serviceURL + 'token',
+	  	method: "POST",
+	  	data: { user_id : oa_user_id , token: token },
+	  	dataType: "html"
+	});
+	 
+	request.done(function( data ) {
+		alert(data );
+		obj = $.parseJSON( data );
+		if(obj.code === 1) {
+			//
+		}
+		else {
+			//show error
+			
+		}
+	});
+}
+
 function showModal(id) {
 	$('#' + id).show();
 	$('body').append('<div class="page-overlay"></div>');
@@ -175,11 +231,16 @@ function hideModal(id) {
 	$('.page-overlay').remove();
 }
 
-function setStorage(){ 
-
+function setStorage(name, value){ 
+	localStorage.setItem(name, value);
 }
 
-//localStorage.setItem('colorSetting', '#a4509b');
+function getStorage(name) {
+	var value = localStorage.getItem(name);
+	return value;
+}
 
-
+function deleteStorage(name) {
+	localStorage.removeItem(name);
+}
 
