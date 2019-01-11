@@ -296,7 +296,7 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 					html += '<div class="alum-post-meta">Posted ' + post.post_date + ' by ' + post.display_name + '</div>';
 					html += '</div>';
 				});
-				
+				html += '<div class="section-link"><a href="posts.html?id=' + id + '" data-role="none" data-transition="slide">View All Posts</a></center>';
 				html += '</div>';
 			}
 			
@@ -334,6 +334,7 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 						html += '</li>';
 					});
 					html += '</ul>';
+					html += '<div class="section-link"><a href="photos.html?id=' + id + '" data-role="none" data-transition="slide">View All Photos</a></center>';
 					applyCarosel('photo-carosel');
 				}
 				else {
@@ -366,20 +367,23 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 				html += '<div class="table-search"><b>Search:</b> <input type="text" name="member-search"></div>';
 				html += '<small>(D) = Deceased</small>';
 				html += '<div class="responsive-table">';
-				html += '<table class="table"><thead><tr><th>Member Name</th><th>Location</th><th>Init. Date</th><th>Claimed Prof.</th></tr></thead></tbody>';
+				html += '<table class="table"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead></tbody>';
 
 				$.each( obj.data.members , function( key, member ) {
 					var location = (member.city !== '' && member.city !== null) ? member.city + ', ' + member.state : '';
-					var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<button type="button" class="btn btn-sm sendInviteBtn" data-id="' + member.id + '" data-user="' + user_id + '" data-group="' + id + '" style="margin-top: 12px;">Send Invite</button>';
+					var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<button type="button" class="btn btn-sm sendInviteBtn" data-id="' + member.id + '" data-user="' + user_id + '" data-group="' + id + '" data-name="' + member.first_name + ' ' + member.last_name +'" style="margin-top: 12px;">Send Invite</button>';
 					html += '<tr><td nowrap><a href="member.html?id=' + member.id + '" data-role="none" data-transition="slide">';
 					if(member.avatar !== '' && member.avatar !== undefined && member.avatar !== null) {
-						html += '<span class="member-table-avatar">' + member.avatar + '</span>';
+						html += '<div class="member-table-avatar">' + member.avatar + '</div>';
 					}
-					html += member.first_name + ' ' + member.last_name + '</a>';
+					html += '<div class="member-table-meta"><div class="member-table-name">' + member.first_name + ' ' + member.last_name + '</a>';
 					if(member.deceased === true) {
 						html += ' <small>(D)</small>';
 					}
-					html += '</td><td nowrap>' + location + '</td><td nowrap>' + member.init_date_format + '</td><td nowrap>' + claimed_profile + '</td></tr>';
+					html += '</div>';
+					html += '<div class="member-table-location">' + location + '</div>';
+					html += '<div class="member-table-init">Initiation Date: ' + member.init_date_format + '</div></div>';
+					html += '<td nowrap>' + claimed_profile + '</td></tr>';
 				});
 				html += '</tbody></table>';
 				html += '</div>';
@@ -435,7 +439,7 @@ $(document).on( "pageshow", "#member-page", function(event) {
 			}
 			full_name += obj.data.last_name;
 			if(obj.data.suffix !== null) {
-				full_name += ', ' + obj.data.salutation;
+				full_name += ', ' + obj.data.suffix;
 			}
 			
 			html += '<div class="member-avatar">' + obj.data.avatar + '</div>';
@@ -549,6 +553,76 @@ $(document).on( "pagecreate", "#invite-members", function(event) {
 	navigator.contacts.find(filter, onContactSuccess, onError, options);
 });
 
+$(document).on( "pageshow", "#posts-page", function(event) {
+	$.mobile.loading( "show" );
+	$('#posts').html('');
+	
+	var id = getUrlParameter('id');
+	//alert(id);
+	var request = $.ajax({
+		url: serviceURL + 'posts',
+	  	method: "GET",
+	  	data: { id : id },
+	  	dataType: "html"
+	});
+	request.done(function( data ) {
+		alert(data );
+		var obj = $.parseJSON( data );
+		if(obj.msg === 'success') {
+			var html = '';
+			$.each( obj.data, function( key, value ) {
+				html += '<div id="post-div=' + value.ID + '" class="post-page-post">';
+				html += '<div class="post-page-avatar">' + value.avatar_img + '</div>';
+				html += '<div class="post-page-author">' + value.author + '</div>';
+				html += '<div class="post-page-meta">' + value.post_title + '</div>';
+				html += '<div class="post-page-title">' + value.post_title + '</div>';
+				html += '<div class="post-page-content">' + value.post_content + '</div>';
+				html += '</div>';
+			});
+			$('#posts').html(html);
+
+		}
+		else {
+		
+		}
+		$.mobile.loading( "hide" );
+	});
+	 
+	request.fail(function( jqXHR, textStatus, errorThrown ) {
+	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	$.mobile.loading( "hide" );
+	});
+});
+
+$(document).on( "pagecreate", "#photos-page", function(event) {
+	$.mobile.loading( "show" );
+	$('#photos').html('');
+	
+	var id = getUrlParameter('id');
+	//alert(id);
+	var request = $.ajax({
+		url: serviceURL + 'photos',
+	  	method: "GET",
+	  	data: { id : id },
+	  	dataType: "html"
+	});
+	request.done(function( data ) {
+		alert(data );
+		var obj = $.parseJSON( data );
+		if(obj.msg === 'success') {
+			
+		}
+		else {
+		
+		}
+		$.mobile.loading( "hide" );
+	});
+	 
+	request.fail(function( jqXHR, textStatus, errorThrown ) {
+	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	$.mobile.loading( "hide" );
+	});
+});
 
 $(document).on('click', '#inviteMembersBtn', function () {
 	showModal('invite-members');
@@ -566,6 +640,10 @@ $(document).on('click', '.uploadPhotoBtn', function () {
 	var group_id = $(this).data('id');
 	var group_name = $(this).data('name');
 	var user_id = $(this).data('user');
+	
+	$('#upload-photo-frm input[name="user_id"]').val(user_id);
+	$('#upload-photo-frm input[name="group_id"]').val(group_id);
+
 	var y = (new Date()).getFullYear();
 	var min_year = parseInt(y) - 100;
 	for (var i = y; i >= min_year; i--){
@@ -580,6 +658,7 @@ $(document).on('click', '.uploadPhotoBtn', function () {
 
 $(document).on('click', '.sendInviteBtn', function () {
 	var member_id = $(this).data('id');
+	var member_name = $(this).data('name');
 	var user_id = $(this).data('user');
 	var group_id = $(this).data('group');
 	//show modal....
@@ -587,21 +666,19 @@ $(document).on('click', '.sendInviteBtn', function () {
 	$('#invite-member-frm input[name="group_id"]').val(group_id);
 	$('#invite-member-frm input[name="member_id"]').val(member_id);
 	$('#invite-member-frm input[name="user_id"]').val(user_id);
-
+	$("#invite-welcome").html('Use the form below to send an invitation to ' + member_name); 
 	showModal('invite-member');
 });
 
 $(document).on('click', '.submitPhoto', function () {
-	//var user_id = $('input["user_id"]').val();
-	//var group_id = $('input["group_id"]').val();
-	//var photo_data = $('input["photo_data"]').data();
 	//Ajax...
+	$.mobile.loading( "show" );
 	var form = document.getElementById('upload-photo-frm');
-	formData = new FormData(form);
+	formData = new FormData(form); 
 	var request = $.ajax({
 		url: serviceURL + 'submit_photo',
 	  	method: "POST",
-	  	data: FormData(),
+	  	data: formData,
 	  	dataType: "html",
 		cache: false,
 		contentType: false,
@@ -611,15 +688,20 @@ $(document).on('click', '.submitPhoto', function () {
 		alert(data );
 		obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
-			$.mobile.loading( "hide" );
-			//login, save user...forward to home...
-			setStorage('oa_user_id', obj.data.user_id);
-			setStorage('oa_display_name', obj.data.display_name);
-			$('#registration').html('');
-        	$('#home-buttons').show();
-			var token = getStorage('registrationId');
-            setUserToken(obj.data.user_id, token);
-            $.mobile.loading( "hide" );
+			$('#upload-photo-frm input[name="user_id"]').val('');
+			$('#upload-photo-frm input[name="group_id"]').val('');
+			$('#upload-photo-frm input[name="photo_caption"]').val('');
+			$('#upload-photo-frm select[name="photo_year"]').val('');
+			$("#photoCanvas").css('height', '0px');
+			$('#photoPreview').attr('src', '');
+			$('#upload-photo-frm input[name="photo"]').val('');
+			//hide overlay....
+			hideModal('photo-upload');
+			//Alert popup
+			$('body').prepend('<div class="alert-popup alert-info">Your photo has been submitted!</div>');
+			setTimeout(function(){
+				$('.alert-popup').fadeOut().remove();
+			}, 2000);
 		}
 		else {
 			//show error
@@ -645,6 +727,7 @@ $(document).on('change', 'input[name="photo"]', function () {
 });
 
 $(document).on('click', '.submitInvite', function () {
+	$.mobile.loading( "show" );
 	var member_id = $('#invite-member-frm input["member_id"]').val();
 	var user_id = $('#invite-member-frm input["user_id"]').val();
 	var group_id = $('#invite-member-frm input["group_id"]').val();
@@ -663,11 +746,19 @@ $(document).on('click', '.submitInvite', function () {
 		obj = $.parseJSON( data );
 		if(obj.code === 1) {
 			//
+			$('#invite-member-frm input["member_id"]').val();
+			var user_id = $('#invite-member-frm input["user_id"]').val();
+			var group_id = $('#invite-member-frm input["group_id"]').val();
+			var email_address = $('#invite-member-frm input["email_address"]').val();
+			var phone = $('#invite-member-frm input["phone"]').val();
+			hideModal('invite-member');
+
 		}
 		else {
 			//show error
 			
 		}
+		$.mobile.loading( "hide" );
 	});
 	
 });

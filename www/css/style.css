@@ -114,8 +114,8 @@ ul {
 
 .app-page {
 	width:80%;
-	padding: 20px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
-	margin: 10px 0px 0px 10%;
+	padding: 10px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
+	margin: 0px 0px 0px 10%;
 	clear: both;
 }
 
@@ -217,7 +217,7 @@ input, select {
 }
 
 .table td {
-	padding: 3px 6px;
+	padding: 3px 3px 3px 6px;
 }
 
 [data-role=page] {
@@ -292,7 +292,7 @@ input, select {
 	opacity: 0.83;
 	transition: opacity 0.6s;
 	margin-bottom: 15px;
-	text-shadow: 0;
+	text-shadow: none;
 }
 
 .alert-success {
@@ -301,6 +301,7 @@ input, select {
 
 .alert-info {
 	background-color: #2196F3;
+	color: #fff;
 }
 
 .alert-warning {
@@ -320,6 +321,22 @@ input, select {
     line-height: 18px;
     cursor: pointer;
     transition: 0.3s;
+}
+
+.alert-popup {
+	position: fixed;
+	right: 0;
+    left: 0;
+    top: 40%;
+    margin-right: auto;
+    margin-left: auto;
+    width: 90%;
+   	opacity: .9;
+   	z-index: 998;
+   	text-shadow: none;
+	font-size: 16px;
+	text-align: center;
+	padding: 10px;
 }
     
 #clist {
@@ -438,6 +455,17 @@ h2.section-title {
 	margin: 0 0 15px 0;
 }
 
+.section-link {
+	text-align: center;
+	font-size: 16px;
+	text-transform: uppercase;
+}
+
+.section-link a {
+	display: block;
+	padding: 10px;
+}
+
 .alum-post-avatar {
 	width: 40px;
 	height: 40px;
@@ -480,7 +508,7 @@ h2.section-title {
 	width: 30px;
 	margin-right: 6px;
 	display: inline-block;
-	vertical-align: middle;
+	vertical-align: top;
 	border: 1px solid #0984c4;
 	border-radius: 50%;
 	overflow: hidden;
@@ -489,6 +517,25 @@ h2.section-title {
 .member-table-avatar img {
 	height: 30px;
 	width: 30px;
+}
+
+.member-table-meta {
+	display: inline-block;
+}
+
+.member-table-name {
+	font-size: 16px;
+}
+
+.member-table-location {
+	font-size: 12px;
+	text-decoration: uppercase;
+}
+
+.member-table-init {
+	color: #999;
+	font-size: 12px;
+	text-decoration: uppercase;
 }
 
 /* Carosel */
@@ -572,6 +619,42 @@ h2.section-title {
 .member-profile-connection-title {font-size: 18px; }
 .member-profile-connection-meta { font-size: 12px; color: #999; margin-bottom: 20px;}
 
+/* Posts Page */
+.post-page-post {
+	
+}
+.post-page-avatar {
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: block;
+	margin-right: 12px;
+	vertical-align: middle;
+	border: 1px solid #0984c4;
+	margin: 20px auto;
+}
+
+.post-page-avatar img {
+	width: 120px;
+	height: 120px;
+}
+
+
+.post-page-author{
+	
+}
+.post-page-meta {
+	
+}
+.post-page-title {
+	
+	
+}
+.post-page-content {
+	
+}
+				
 /* Timeline */
 
 .timeline {
@@ -807,4 +890,17 @@ h3.timeline-title {
 }
 .marker-outline .timeline-item:hover .timeline-marker:before {
   background: #FF6B6B;
+}
+
+/* Mobile Only */
+
+@media only screen and (max-width: 600px) {
+
+	.member-table-name {
+		max-width: 150px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 }

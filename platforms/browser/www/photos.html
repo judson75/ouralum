@@ -20,71 +20,17 @@
 	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css" />
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <title>Our Alum - Alum</title>
+    <title>Our Alum - Photos</title>
 </head>
 
 <body>
-	<div data-role="page" id="alumn-page">
+	<div data-role="page" id="photos-page">
 		<div class="page-header">
 			<div id="header-left"><a href="index.html" data-role="none" data-transition="slide" data-direction="reverse"><i class="fa fa-home" aria-hidden="true"></i></a></div>
 			<div id="logo"><a href="index.html" data-role="none" data-transition="slide" data-direction="reverse"><img src="img/alum_logo.jpg"></a></div>
 			<div id="header-right"></div>
 		</div>
-		<div id="alumn" class="app-page"></div>
-	</div>
- 	<!-- Photo Upload Modal -->
-  	<div data-role="modal" id="photo-upload">
-		<div data-role="header">
-			<h2>Upload Photo</h2>
-			<div data-role="close"><i class="fa fa-times" aria-hidden="true"></i></div>
-		</div>
-		<div data-role="content">
-			<form id="upload-photo-frm" enctype="multipart/form-data">
-				<input type="hidden" name="group_id" value="">
-				<input type="hidden" name="user_id" value="">
-				<input type="hidden" name="photo_data" value="">
-				<div class="form-group">
-					<label>Photo Year:</label>
-					<select name="photo_year">
-						<option value="">Choose Year</option>
-					</select>
-				</div>
-				<div class="form-group">
-					<label>Caption:</label> <input type="text" name="photo_caption">
-				</div>
-				<div class="form-group">
-					<input type="file" name="photo" style="display: none;" accept="image/*">
-					<img id="photoPreview" class="img-responsive" crossorigin="anonymous" src="" style="display: none;">
-					<canvas id="photoCanvas" style="height: 1px;"></canvas>
-					<button type="button" class="btn btn-sm  btn-primary selectPhotoBtn">Choose Photo</button>
-				</div>
-				<div id="submitError"></div>
-				<button type="button" class="btn submitPhoto">Submit Photo</button>
-			</form>	
-		</div>
-	</div>
-	
-   <!-- Invite Member Modal -->
-  	<div data-role="modal" id="invite-member">
-		<div data-role="header">
-			<h2>Send Invite</h2>
-			<div data-role="close"><i class="fa fa-times" aria-hidden="true"></i></div>
-		</div>
-		<div data-role="content">
-			<p id="invite-welcome">Use the form below to send an invitation to a friend.</p>
-			<form id="invite-member-frm">
-				<input type="hidden" name="group_id" value="">
-				<input type="hidden" name="member_id" value="">
-				<input type="hidden" name="user_id" value="">
-				<div class="form-group">
-					<label>Email Address:</label> <input type="text" name="email_address">
-				</div>
-				<div class="form-group">
-					<label>Phone:</label> <input type="text" name="phone">
-				</div>
-				<button type="button" class="btn submitInvite">Send Invite</button>
-			</form>
-		</div>
+		<div id="photos" class="app-page"></div>
 	</div>
    
     <script type="text/javascript" src="cordova.js"></script>
