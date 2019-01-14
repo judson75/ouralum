@@ -49,6 +49,10 @@ body {
 
 input:focus, button:focus, select:focus, textarea:focus {outline:none;}
 
+img {
+	max-width: 100%;
+	height: auto;
+}
 h5.no-results {
 	font-size: 24px;
 	text-align: center;
@@ -59,6 +63,10 @@ ul {
 	margin-left: 10px;
 	padding-left: 0;
 }
+
+.helper {}
+
+.error { color: #f44336;}
 
 .ui-page-theme-a {
 	background: #fff;
@@ -170,6 +178,17 @@ input, select {
 	border-radius: 6px;
 	box-sizing: border-box;
 	display: block;
+}
+
+textarea {
+	width: 100%;
+	border: 1px solid #ccc;
+	padding: 8px;
+	font-size: 16px;
+	border-radius: 6px;
+	box-sizing: border-box;
+	display: block;
+	height: 180px;
 }
 
 .form-group {
@@ -468,35 +487,38 @@ input, select {
 	height: 160px;
 	width: 160px;
 	border-radius: 50%;
-	background: #e1e1e1;
-	border: 1px solid #999;
+	background: #fafafa;
+	border: 1px solid #e1e1e1;
 	display: block;
-	margin: 0 auto;
+	margin: 0 auto 15px auto;
 	vertical-align: middle;
 }
 #alum-title-ph {
-	background: #e1e1e1;
-	border: 1px solid #999;
+	background: #fafafa;
+	border: 1px solid #e1e1e1;
 	height: 50px;
 	width: 100%;
 	display: block;
+	margin: 0 auto 10px auto;
 }
 #alum-desc-ph {
-	background: #e1e1e1;
-	border: 1px solid #999;
+	background: #fafafa;
+	border: 1px solid #e1e1e1;
 	height: 150px;
 	width: 80%;
 	display: block;
+	margin: 0 auto 10px auto;
 }
 #alum-posts-ph {
 	
 }
 .alum-post-ph {
-	background: #e1e1e1;
-	border: 1px solid #999;
+	background: #fafafa;
+	border: 1px solid #e1e1e1;
 	height: 30px;
 	width: 100%;
 	display: block;
+	margin: 0 auto 10px auto;
 }
 				
 				
@@ -664,6 +686,58 @@ h2.section-title {
 	text-decoration: uppercase;
 }
 
+.table-results-pagination {
+	margin: 20px auto;
+	border-top: 1px solid #ccc;
+	padding: 20px;
+}
+
+.table-results-pagination .btn { display: inline-block; padding: 12px; width: 50px; }
+
+.pagination-left { display: inline-block; width: 30%; }
+
+.pagination-left .btn {
+	-webkit-border-top-left-radius: 15px;
+	-webkit-border-bottom-left-radius: 15px;
+	-moz-border-radius-topleft: 15px;
+	-moz-border-radius-bottomleft: 15px;
+	border-top-left-radius: 15px;
+	border-bottom-left-radius: 15px;
+}
+
+.pagination-text{
+	width: 40%;
+	display: inline-block;
+	text-align: center;
+	color: #999;
+}
+
+.pagination-right {
+	display: inline-block;
+	width: 30%;
+	text-align: right;
+}
+
+.pagination-right .btn {
+	-webkit-border-top-right-radius: 15px;
+	-webkit-border-bottom-right-radius: 15px;
+	-moz-border-radius-topright: 15px;
+	-moz-border-radius-bottomright: 15px;
+	border-top-right-radius: 15px;
+	border-bottom-right-radius: 15px;
+}
+
+#alum-jobs {}
+.alum-page-job-post {}
+.alum-page-job-post h3 { font-size: 20px; margin: 25px 0 10px 0; }
+.alum-page-job-post p { font-size: 16px;}
+.ap-job-meta { font-size: 12px; text-transform: uppercase; color: #999; }
+
+
+#alum-links {}
+#group-links {}
+
+
 /* Carosel */
 .carosel-wrapper {
 	width: 110%;
@@ -703,7 +777,7 @@ h2.section-title {
 
 .carosel li {
 	display: inline-block;
-	margin-right: -4px;
+	margin-right: 0px;
 	/*border: 1px solid blue;*/
 }
 

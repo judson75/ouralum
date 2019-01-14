@@ -159,7 +159,7 @@ function onContactSuccess(contacts) {
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
-	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	alert( "Request failed Line 162: " + textStatus + " - " + jqXHR.responseText);
 	  	//var err = eval("(" + jqXHR.responseText + ")");
 	  	var err = $.parseJSON(jqXHR.responseText)
   		alert(err.Message);
@@ -236,7 +236,7 @@ $(document).on('click', '#sendInviteList', function() {
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
-	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	alert( "Request failed Line 239: " + textStatus + " - " + jqXHR.responseText);
 	  	$.mobile.loading( "hide" );
 	});
 });
@@ -274,7 +274,7 @@ $(document).on( "click", ".loginBtn", function() {
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
-	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  		alert( "Request failed Line 277: " + textStatus + " - " + jqXHR.responseText);
 	  	$.mobile.loading( "hide" );
 	});
 	
@@ -351,16 +351,17 @@ $(document).on( "pageshow", "#alumns-page", function(event) {
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
-	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	alert( "Request failed Line 354: " + textStatus + " - " + jqXHR.responseText);
 	  	$.mobile.loading( "hide" );
 	});
 	
 });
 
+//event.preventDefault();
+//$(document).on('pageinit', '#alumn-page', function(){
 $(document).on( "pageshow", "#alumn-page", function(event) {
-	//$.mobile.loading( "show" );
 	$.mobile.loading( "show", { theme: "z", text: "Getting Alumn Info", textVisible: true} );
-	$('#alumn').html('');
+	//$('#alumn').html('');
 	var id = getUrlParameter('id');
 	var user_id = getStorage('oa_user_id');
 	//alert("SHOW ID: " + id);
@@ -420,7 +421,6 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 					html += '</li>';
 				});
 				html += '</ul>';
-				applyCarosel('comp-carosel');
 			}
 			
 //alert("PHOTOS: " + obj.data.photos);
@@ -440,7 +440,6 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 					});
 					html += '</ul>';
 					html += '<div class="section-link"><a href="photos.html?id=' + id + '" data-role="none" data-transition="slide">View All Photos</a></center>';
-					applyCarosel('photo-carosel');
 				}
 				else {
 					html += '<h5 class="no-results">No Photos</h5>';
@@ -450,9 +449,9 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 				html += '</div>';
 			
 			
-			html += '<div id="alum-map">';
-			html += '<h2 class="section-title">Alum Member Map</h2>';
-			html += '</div>';
+			//html += '<div id="alum-map">';
+			//html += '<h2 class="section-title">Alum Member Map</h2>';
+			//html += '</div>';
 			
 //alert("MEMBERS: " + obj.data.members);
 			
@@ -471,11 +470,11 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 				html += '</div>';
 				html += '<div class="table-search"><b>Search:</b> <input type="text" name="member_search"></div>';
 				html += '<small>(D) = Deceased</small>';
-				html += '<div class="responsive-table" id="members-table-container">';
-				html += '<div class="table-results-count">' + obj.data.members.length + ' Members Found</div>';
+				html += '<div class="responsive-table" id="members-table-container">'; //members-table-container
+				html += '<div class="table-results-count">' + obj.data.members.total_members + ' Members Found</div>';
 				html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
 				var t = '';
-				$.each( obj.data.members , function( key, member ) {
+				$.each( obj.data.members.data , function( key, member ) {
 					t += buildMembersTable(id, user_id, member);
 					/*
 					var location = (member.city !== '' && member.city !== null) ? member.city + ', ' + member.state : '';
@@ -496,14 +495,118 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 				});
 				html += t;
 				html += '</tbody></table>';
+				html += '<div class="table-results-pagination">';
+				html += '<span class="pagination-left">';
+				if(obj.data.members.current_page !== 1) {
+					html += '<button type="button" class="btn btn-sm goToMPage" data-page="' + obj.data.members.prev_page + '"><i class="fa fa-chevron-left"></i></button>';
+				}
+				else {
+					html += '<button type="button" class="btn btn-sm" disabled><i class="fa fa-chevron-left"></i></button>';
+				}
+				
+				html += '</span>';
+				html += '<span class="pagination-text">Page ' + obj.data.members.current_page + ' of ' + obj.data.members.total_pages + '</span>';
+				html += '<span class="pagination-right">';
+				//alert(obj.data.members.current_page  + ' - ' +  obj.data.members.total_pages);
+				if(obj.data.members.current_page !== obj.data.members.total_pages) {
+					html += '<button type="button" class="btn btn-sm goToMPage" data-page="' + obj.data.members.next_page + '"><i class="fa fa-chevron-right"></i></button></div>';
+				}
+				else {
+					html += '<button type="button" class="btn btn-sm" disabled><i class="fa fa-chevron-right"></i></button></div>';
+				}
+				html += '</span>';
 				html += '</div>';
+				
+				
+				html += '</div>';
+				
+				
+				html += '</div>';
+				
+			}
+			if(obj.data.ads !== undefined) {
+				html += '<div id="alum-ads">';
+				html += '<h2 class="section-title">Support Your Alum Businesses</h2>';
+				$.each( obj.data.ads , function( key, ad ) {
+					html += '<div class="alum-page-ad" id="group-ad-' + ad.id + '">';
+					html += '<a href="member.html?id=' + ad.user_id + '" data-role="none" data-transition="slide"><img src="' + ad.img_url + '" alt=""></a><div style="font-size: 12px; text-align: center; color: #ccc;">Added by ' + ad.user_name + '</div>';
+					//if(ad.user_id === user_id) {
+					//	html += '<br><button type="button" class="btn btn-primary btn-xs deleteAd" data-id="' + ad.id + '">Delete Ad</button>';
+					//}
+					html += '</div>';
+				});
 				html += '</div>';
 			}
-alert(html);
-			$('#alumn').show();
-            $('#alumn').html(html);
+			
+			if(obj.data.jobs !== undefined) {	
+				html += '<div id="alum-jobs">';
+				html += '<h2 class="section-title">Alum Professions and Job Listings</h2>';
+				$.each( obj.data.jobs , function( key, job ) {
+					html += '<div class="alum-page-job-post">';
+					html += '<h3><a href="job.html?id=' + job.id + '" data-role="none" data-transition="slide">' + job.job_title + '</a></h3>';
+					if(job.short_desc !== undefined) {				
+						html += '<p>' + job.short_desc + '...</p>';
+					}
+					html += '<div class="ap-job-meta">' + job.city + ', ' + job.state + '</div>';
+					html += '</div>';
+				});
+				html += '<div class="section-link"><a href="jobs.html?id=' + id + '" data-role="none" data-transition="slide">View All Jobs</a></center>';
+				html += '</div>';
+			
+			}
+			
+			if(obj.data.links !== undefined) {
+				html += '<div id="alum-links">';
+				html += '<h2 class="section-title">Alum Links</h2>';
+				html += '<ul id="group-links">';
+				$.each( obj.data.links , function( key, link ) {
+					//alert(link.caption);
+					html += '<li><a href="' + link.url + '">';
+					if(link.caption !== undefined && link.caption !== '') {
+						html += link.caption;
+					}
+					else {
+						html += link.url;
+					}
+					html += '</a></li>';
+				});
+				html += '</ul>';
+				html += '</div>';
+			}
+			
+			html += '<div id="alum-contact">';
+			html += '<h2 class="section-title">Contact Us</h2>';
+			html +='<form id="alum-contact-frm" method="post">';
+			html +='<input type="hidden" name="group_id" value="' + id + '">';		
+			html +='<div class="form-group">';
+			html +='<input type="text" name="sender_name" class="form-input" value="" placeholder="Your Name">';
+			html +='</div>';
+			html +='<div class="form-group">';
+			html +='<input type="text" name="sender_email"  class="form-input" value="" placeholder="Your Email">';
+			html +='</div>';
+			html +='<div class="form-group">';
+			html +='<textarea name="sender_comments"  class="form-input"></textarea>';
+			html +='</div>';
+			html +='<button type="button" class="btn btn-primary sendAlumContact">Send Comments</button>';
+			html +='</form>';
+			html += '</div>';
+			
+			
+//alert(html);
+			$('#alumn_content').show();
+            //$('#alumn').html(html);
+			$('#alumn_content').hide().html(html).fadeIn();
+//alert("HERE");
+			
 			//Do the carosel
-			applyCarosel('comp-carosel');
+			if($('#comp-carosel').length) {
+				applyCarosel('comp-carosel');
+			}
+			if($('#photo-carosel').length) {
+				applyCarosel('photo-carosel');
+			}
+			
+			
 		}
 		else {
 			//show error
@@ -513,7 +616,7 @@ alert(html);
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
-	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	alert( "Request failed Line 616: " + textStatus + " - " + jqXHR.responseText);
 	  	$.mobile.loading( "hide" );
 	});
 });
@@ -522,8 +625,7 @@ alert(html);
 $(document).on( "pageshow", "#member-page", function(event) {
 	//$.mobile.loading( "show" );
 	$.mobile.loading( "show", { theme: "z", text: "Loading Member Profile", textVisible: true} );
-	$('#member-profile').html('');
-	
+	//$('#member-profile').html('');
 	var id = getUrlParameter('id');
 	//alert(id);
 	var request = $.ajax({
@@ -643,15 +745,31 @@ $(document).on( "pageshow", "#member-page", function(event) {
 			if(obj.data.timeline !== null && obj.data.timeline !== undefined) {
 				html += obj.data.timeline;
 			}
-			$('#member-profile').html(html);
+			//$('#member-profile').html(html);
+			$('#member-profile').hide().html(html).fadeIn();
 		}
 		$.mobile.loading( "hide" );
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
-	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	alert( "Request failed Line 752: " + textStatus + " - " + jqXHR.responseText);
 	  	$.mobile.loading( "hide" );
 	});
+});
+
+$(document).on( "pageshow", "#jobs-page", function(event) {
+	$.mobile.loading( "show", { theme: "z", text: "Loading Jobs", textVisible: true} );
+	var id = getUrlParameter('id');
+	
+	$.mobile.loading( "hide" );
+});
+
+$(document).on( "pageshow", "#job-page", function(event) {
+	$.mobile.loading( "show", { theme: "z", text: "Loading Job", textVisible: true} );
+	var id = getUrlParameter('id');
+	
+	
+	$.mobile.loading( "hide" );
 });
 
 $(document).on( "pagecreate", "#invite-members", function(event) {
@@ -701,7 +819,7 @@ $(document).on( "pageshow", "#posts-page", function(event) {
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
-	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	alert( "Request failed Line 804: " + textStatus + " - " + jqXHR.responseText);
 	  	$.mobile.loading( "hide" );
 	});
 });
@@ -740,7 +858,7 @@ $(document).on( "pagecreate", "#photos-page", function(event) {
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
-	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	alert( "Request failed Line 843: " + textStatus + " - " + jqXHR.responseText);
 	  	$.mobile.loading( "hide" );
 	});
 });
@@ -794,9 +912,33 @@ $(document).on('click', '.sendInviteBtn', function () {
 $(document).on('click', '.submitPhoto', function () {
 	//Ajax...
 	//$.mobile.loading( "show" );
-	$.mobile.loading( "show", { theme: "z", text: "Submitting Photo", textVisible: true} );
+	$('div').removeClass('hasError');
+	$('.helper.error').remove();
+	$.mobile.loading( "show", { theme: "c", text: "Submitting Photo", textVisible: true} );
 	var form = document.getElementById('upload-photo-frm');
-	formData = new FormData(form); 
+	formData = new FormData(form);
+	//Validation
+	var err_count = 0;
+	if($('select[name="photo_year"]').val() === '') {
+		$('select[name="photo_year"]').parent().addClass('hasError');
+		$('select[name="photo_year"]').after('<div class="helper error">Please select photo year</div>');
+		err_count++;
+	}
+	if($('input[name="photo_caption"]').val() === '') {
+		$('input[name="photo_caption"]').parent().addClass('hasError');
+		$('input[name="photo_caption"]').after('<div class="helper error">Please enter a caption</div>');
+		err_count++;
+	}
+	if($('input[name="photo"]').val() === '') {
+		$('input[name="photo"]').parent().addClass('hasError');
+		$('input[name="photo"]').after('<div class="helper error">Please upload a photo</div>');
+		err_count++;
+	}
+	if(err_count > 0) {
+		//$('#upload-photo-frm').prepend('<div class="alert alert-error">Please fix errors and resubmit</div>');
+		$.mobile.loading( "hide" );
+		return false;
+	}
 	var request = $.ajax({
 		url: serviceURL + 'submit_photo',
 	  	method: "POST",
@@ -807,7 +949,7 @@ $(document).on('click', '.submitPhoto', function () {
         processData: false,
 	});
 	request.done(function( data ) {
-		//alert(data );
+		//alert(data);
 		obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
 			$('#upload-photo-frm input[name="user_id"]').val('');
@@ -833,7 +975,7 @@ $(document).on('click', '.submitPhoto', function () {
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
-	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	alert( "Request failed Line 960: " + textStatus + " - " + jqXHR.responseText);
 	  	$.mobile.loading( "hide" );
 	});
 	
@@ -845,7 +987,9 @@ $(document).on('click', '.selectPhotoBtn', function () {
 
 $(document).on('change', 'input[name="photo"]', function () {
 	readURLPhoto(this);
-    var filename = $j('input[name="photo"]').val();
+    var filename = $('input[name="photo"]').val();
+	$('input[name="photo"]').parent().find('.error').remove();
+	$('input[name="photo"]').parent().removeClass('hasError');
 });
 
 $(document).on('click', '.submitInvite', function () {
@@ -886,6 +1030,16 @@ $(document).on('click', '.submitInvite', function () {
 	
 });
 
+$(document).on('change', 'select[name="photo_year"]', function() {
+	$(this).parent().find('.error').remove();
+	$(this).parent().removeClass('hasError');
+});
+
+$(document).on('blur', 'input[name="photo_caption"]', function() {
+	$(this).parent().find('.error').remove();
+	$(this).parent().removeClass('hasError');
+});
+
 $(document).on('change', '#member_tableFilter_init', function() {
 	//search using new filter...
 	//$.mobile.loading( "show" );
@@ -906,23 +1060,48 @@ $(document).on('change', '#member_tableFilter_init', function() {
 		var obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
 			var html = '';
-			html += '<div class="table-results-count">' + obj.data.length + ' Members Found</div>';
-			html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
-			if(obj.data !== '' && obj.data !== null && obj.data !== undefined) {
+			//alert(obj.data);
+			if(obj.data !== '' && obj.data !== null && obj.data !== undefined && obj.data !== 'null') {
+				html += '<div class="table-results-count">' + obj.total_members + ' Members Found</div>';
+				html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
 				var t = '';
 				$.each( obj.data, function( key, member ) { 
 					//alert(member.id);
-					t += buildMembersTable(id, user_id, member);			
+					t += buildMembersTable(id, user_id, member);		
 				});
 				html += t; 
 				html += '</tbody><table>';
+
+				html += '<div class="table-results-pagination">';
+				html += '<span class="pagination-left">';
+				if(obj.current_page !== 1) {
+					html += '<button type="button" class="btn btn-sm goToMPage" data-page="' + obj.prev_page + '"><i class="fa fa-chevron-left"></i></button>';
+				}
+				else {
+					html += '<button type="button" class="btn btn-sm" disabled><i class="fa fa-chevron-left"></i></button>';
+				}
+				
+				html += '</span>';
+				html += '<span class="pagination-text">Page ' + obj.current_page + ' of ' + obj.total_pages + '</span>';
+				html += '<span class="pagination-right">';
+				if(obj.current_page !== obj.total_pages) {
+					html += '<button type="button" class="btn btn-sm goToMPage" data-page="' + obj.next_page + '"><i class="fa fa-chevron-right"></i></button></div>';
+				}
+				else {
+					html += '<button type="button" class="btn btn-sm" disabled><i class="fa fa-chevron-right"></i></button></div>';
+				}
+				html += '</span>';
+				html += '</div>';
+				
 				//alert(html);
 				$('#members-table-container').html(html);
+				$.mobile.loading( "hide" );
 			}
 			else {
 				alert("No Results");
+				$.mobile.loading( "hide" );
 			}
-			$.mobile.loading( "hide" );
+
 		}
 		else {
 		
@@ -932,7 +1111,7 @@ $(document).on('change', '#member_tableFilter_init', function() {
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
-	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	alert( "Request failed Line 1097: " + textStatus + " - " + jqXHR.responseText);
 	  	$.mobile.loading( "hide" );
 	});
 });
@@ -943,7 +1122,7 @@ $(document).on('keyup', 'input[name="member_search"]', function() {
 	var id = getUrlParameter('id');
 	var init_year = $('#member_tableFilter_init').val();
 	var search_str = $(this).val();
-	if(search_str.length > 3) {
+	//if(search_str.length > 3) {
 		$.mobile.loading( "show", { theme: "z", text: "Searching", textVisible: true} );
 		//alert(id);
 		var request = $.ajax({
@@ -957,7 +1136,7 @@ $(document).on('keyup', 'input[name="member_search"]', function() {
 			var obj = $.parseJSON( data );
 			if(obj.msg === 'success') {
 				var html = '';
-				html += '<div class="table-results-count">' + obj.data.length + ' Members Found</div>';
+				html += '<div class="table-results-count">' + obj.total_members + ' Members Found</div>';
 				html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
 				if(obj.data !== '' && obj.data !== null && obj.data !== undefined) {
 					var t = '';
@@ -967,6 +1146,27 @@ $(document).on('keyup', 'input[name="member_search"]', function() {
 					});
 					html += t; 
 					html += '</tbody><table>';
+					html += '<div class="table-results-pagination">';
+					html += '<span class="pagination-left">';
+					if(obj.current_page !== 1) {
+						html += '<button type="button" class="btn btn-sm goToMPage" data-page="' + obj.prev_page + '"><i class="fa fa-chevron-left"></i></button>';
+					}
+					else {
+						html += '<button type="button" class="btn btn-sm" disabled><i class="fa fa-chevron-left"></i></button>';
+					}
+
+					html += '</span>';
+					html += '<span class="pagination-text">Page ' + obj.current_page + ' of ' + obj.total_pages + '</span>';
+					html += '<span class="pagination-right">';
+					if(obj.current_page !== obj.total_pages) {
+						html += '<button type="button" class="btn btn-sm goToMPage" data-page="' + obj.next_page + '"><i class="fa fa-chevron-right"></i></button></div>';
+					}
+					else {
+						html += '<button type="button" class="btn btn-sm" disabled><i class="fa fa-chevron-right"></i></button></div>';
+					}
+					html += '</span>';
+					html += '</div>';
+
 					//alert(html);
 					$('#members-table-container').html(html);
 				}
@@ -983,10 +1183,123 @@ $(document).on('keyup', 'input[name="member_search"]', function() {
 		});
 		 
 		request.fail(function( jqXHR, textStatus, errorThrown ) {
-		  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+		  	alert( "Request failed Line 1169: " + textStatus + " - " + jqXHR.responseText);
 		  	$.mobile.loading( "hide" );
 		});
-	}
+//	}
+});
+
+
+$(document).on('click', '.goToMPage', function() {
+	//search using new filter...
+	var user_id = getStorage('oa_user_id');
+	var id = getUrlParameter('id');
+	var page = $(this).data('page');
+	var init_year = $('#member_tableFilter_init').val();
+	var search_str = $('input[name="member-search"]').val();
+	$.mobile.loading( "show", { theme: "z", text: "Loading", textVisible: true} );
+	//alert(id);
+	var request = $.ajax({
+		url: serviceURL + 'members',
+		method: "GET",
+		data: { id : id, init_year: init_year, search_str: search_str, page: page },
+		dataType: "html"
+	});
+	request.done(function( data ) {
+		//alert(data );
+		var obj = $.parseJSON( data );
+		if(obj.msg === 'success') {
+			var html = '';
+			html += '<div class="table-results-count">' + obj.total_members + ' Members Found</div>';
+			html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
+			if(obj.data !== '' && obj.data !== null && obj.data !== undefined) {
+				var t = '';
+				$.each( obj.data, function( key, member ) { 
+					//alert(member.id);
+					t += buildMembersTable(id, user_id, member);			
+				});
+				html += t; 
+				html += '</tbody><table>';
+				html += '<div class="table-results-pagination">';
+				html += '<span class="pagination-left">';
+				if(obj.current_page !== 1) {
+					html += '<button type="button" class="btn btn-sm goToMPage" data-page="' + obj.prev_page + '"><i class="fa fa-chevron-left"></i></button>';
+				}
+				else {
+					html += '<button type="button" class="btn btn-sm" disabled><i class="fa fa-chevron-left"></i></button>';
+				}
+
+				html += '</span>';
+				html += '<span class="pagination-text">Page ' + obj.current_page + ' of ' + obj.total_pages + '</span>';
+				//alert(obj.current_page  + ' - ' +  obj.total_pages);
+				html += '<span class="pagination-right">';
+				if(obj.current_page != obj.total_pages) {
+					html += '<button type="button" class="btn btn-sm goToMPage" data-page="' + obj.next_page + '"><i class="fa fa-chevron-right"></i></button></div>';
+				}
+				else {
+					html += '<button type="button" class="btn btn-sm" disabled><i class="fa fa-chevron-right"></i></button></div>';
+				}
+				html += '</span>';
+				html += '</div>';
+
+				//alert(html);
+				$('html,body').animate({
+				  scrollTop: $('#alum-members').offset().top
+				}, 1000);
+				
+				$('#members-table-container').html(html);
+			}
+			else {
+				alert("No Results");
+			}
+			$.mobile.loading( "hide" );
+		}
+		else {
+
+		}
+
+		$.mobile.loading( "hide" );
+	});
+
+	request.fail(function( jqXHR, textStatus, errorThrown ) {
+		alert( "Request failed Line 1243: " + textStatus + " - " + jqXHR.responseText);
+		$.mobile.loading( "hide" );
+	});
+});
+
+
+$(document).on('click', '.sendAlumContact', function () {
+	var group_id = $('input[name="group_id"]').val();
+	var sender_name = $('input[name="sender_name"]').val();
+	var sender_email = $('input[name="sender_email"]').val();
+	var sender_comments = $('textarea[name="sender_comments"]').val();
+	
+	$.mobile.loading( "show", { theme: "z", text: "Sending your contact", textVisible: true} );
+	
+	var request = $.ajax({
+		url: serviceURL + 'group_contact',
+		method: "POST",
+		data: { group_id: group_id, sender_name: sender_name, sender_email: sender_email, sender_comments: sender_comments },
+		dataType: "html"
+	});
+	request.done(function( data ) {
+		alert(data );
+		var obj = $.parseJSON( data );
+		if(obj.msg === 'success') {
+			
+			$.mobile.loading( "hide" );
+		}
+		else {
+
+		}
+
+		$.mobile.loading( "hide" );
+	});
+
+	request.fail(function( jqXHR, textStatus, errorThrown ) {
+		alert( "Request failed Line 1342: " + textStatus + " - " + jqXHR.responseText);
+		$.mobile.loading( "hide" );
+	});
 });
 
 function setUserToken(oa_user_id, token) {
@@ -1081,7 +1394,7 @@ function applyCarosel(id) {
 	var ch = $('#' + id).parent('.carosel-wrapper').height();
 
 	//Disable right nav on start
-	$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-right').addClass('disabled');
+	$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-left').addClass('disabled');
 	
 	
 //console.log("CW: " + cw);
@@ -1089,57 +1402,66 @@ function applyCarosel(id) {
 	//set width
 	var ulw = cw * lic;
 	$('#' + id).width(ulw);
+	//right nav trigger
+	$(document).off('click', '#' + id + '-carosel-nav-right').on('click', '#' + id + '-carosel-nav-right',function(e) {
+		e.preventDefault();
+		if(!$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-right').hasClass('disabled')) {
+			cl = cl - cw;
+			lc++;
+			caroselSlide(id, cl, lc, lic);
+		}
+	});
+	//Right swipe
+	$(document).on('swiperight', '.carosel-wrapper #' + id, function(e) {	
+		e.preventDefault();
+		if(!$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-left').hasClass('disabled')) {
+			//cl = cl - cw;
+			//lc++;
+			//caroselSlide(id, cl, lc, lic);
+			$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-left').click();
+		}
+	});
+
+	
 	//Left nav trigger
-	$(document).on('click', '#' + id + '-carosel-nav-left', function() {			
+	$(document).off('click', '#' + id + '-carosel-nav-left').on('click', '#' + id + '-carosel-nav-left',function(e) {
+		e.preventDefault();
 		if(!$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-left').hasClass('disabled')) {
-			cl = cl - cw;
-			lc++;
-			caroselSlide(id, cl, lc, lic);
-		}
-	});
-	//Left swipe
-	/*
-	$(document).on('swipeleft', '#' + id, function() {			
-		if(!$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-left').hasClass('disabled')) {
-			cl = cl - cw;
-			lc++;
-			caroselSlide(id, cl, lc, lic);
-		}
-	});
-	*/
-	//Right nav trigger
-	$(document).on('click', '#' + id + '-carosel-nav-right', function() {
-		if(!$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-right').hasClass('disabled')) {
 			cl = cl + cw;
 			lc--;
 			caroselSlide(id, cl, lc, lic);
 		}
 	});
-	//Right Swipe
-	/*
-	$(document).on('swiperight', '#' + id, function() {
+	//Left Swipe
+	$(document).on('swipeleft', '.carosel-wrapper #' + id, function(e) {
+		e.preventDefault();
 		if(!$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-right').hasClass('disabled')) {
+			/*
 			cl = cl + cw;
 			lc--;
 			caroselSlide(id, cl, lc, lic);
+			*/
+			$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-right').click();
 		}
 	});
-	*/
+
+	
 }
 
 function caroselSlide(id, cl, lc, lic) {
+	//alert(id + ", " + cl + ", " +lc + ", " + lic);
 	if(lc > 0) {
-		$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-right').removeClass('disabled');
+		$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-left').removeClass('disabled');
 	}
 	else {
-		$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-right').addClass('disabled');
+		$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-left').addClass('disabled');
 	}
 
 	if(lc == lic - 1) {
-		$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-left').addClass('disabled');
+		$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-right').addClass('disabled');
 	}
 	else {
-		$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-left').removeClass('disabled');
+		$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-right').removeClass('disabled');
 	}
 	$('#' + id + " li:first").animate({
 		'margin-left': cl,
@@ -1156,9 +1478,12 @@ function readURLPhoto(input) {
 			$('input[name="photo_data"]').val(data);
 			//console.log(e.target.result);
 			$('#photoPreview').attr('src', e.target.result);
+			
 			EXIF.getData(input.files[0], function() {
 				var allMetaData = EXIF.getAllTags(this);
-				$('input[name="exif_data"]').val(allMetaData);
+				exifOrientation = allMetaData.Orientation;
+				$('input[name="exif_data"]').val(JSON.stringify(allMetaData));
+				$('input[name="orientation"]').val(exifOrientation);
 				// Fetch image tag
 	   			var img = $("#photoPreview").get(0);
 	           	// Fetch canvas
