@@ -47,6 +47,14 @@ body {
     width:100%;
 }
 
+input:focus, button:focus, select:focus, textarea:focus {outline:none;}
+
+h5.no-results {
+	font-size: 24px;
+	text-align: center;
+	margin: 20px 0;
+}
+
 ul {
 	margin-left: 10px;
 	padding-left: 0;
@@ -155,11 +163,13 @@ label {
 }
 
 input, select {
-	width: 95%;
+	width: 100%;
 	border: 1px solid #ccc;
 	padding: 8px;
 	font-size: 16px;
 	border-radius: 6px;
+	box-sizing: border-box;
+	display: block;
 }
 
 .form-group {
@@ -187,6 +197,7 @@ input, select {
 	border-radius: 4px;
     -webkit-border-radius: 4px;
 	padding: 6px;
+	width: auto;
 }
 
 .page-overlay {
@@ -204,9 +215,15 @@ input, select {
 	overflow-y: auto;
 }
 
+.table-results-count {
+	color: #999;
+	margin: 20px 0 10px 0;
+}
+
 .table {
 	border-spacing: 0;
 	border-collapse: collapse;
+	width: 100%;
 }
 
 
@@ -274,11 +291,12 @@ input, select {
 
 
 [data-role=modal] input, [data-role=modal] select {
-	width: 95%;
+	width: 100%;
 	border: 1px solid #ccc;
 	padding: 6px;
 	font-size: 15px;
 	border-radius: 6px;
+	box-sizing: border-box;
 }
 
 [data-role=modal] .form-group {
@@ -340,7 +358,12 @@ input, select {
 }
     
 #clist {
-	
+	padding-bottom: 60px;
+}
+
+#clist p {
+	font-size: 16px;
+	text-align: center;
 }
 
 #clist ul {
@@ -350,7 +373,13 @@ input, select {
 }
 
 #clist ul li {
-	margin-bottom: 10px;
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #ccc;
+}
+
+#clist ul li {
+
 }
 
 .clist-select {
@@ -366,7 +395,7 @@ input, select {
 
 .clist-name {
 	display: block;
-	font-size: 18px;
+	font-size: 20px;
 }
 
 .clist-contact {
@@ -375,12 +404,22 @@ input, select {
 
 #save-button {
 	position: fixed;
-	bottom: 0;
+	bottom: -15px;
 	left: 0;
 	z-index: 90;
 	width: 100%;
 	background: #fff;
+	border-radius: 0px;
+    -webkit-border-radius: 0px;
+    display: none;
+    z-index: 990;
 }
+
+#save-button .btn {
+	border-radius: 0px;
+    -webkit-border-radius: 0px;
+}
+
 
 #alum-list {}
 
@@ -425,13 +464,82 @@ input, select {
 	margin-top: 10px;
 }
 
-#alum-title {
-	font-size: 20px;
+#alum-logo-ph {
+	height: 160px;
+	width: 160px;
+	border-radius: 50%;
+	background: #e1e1e1;
+	border: 1px solid #999;
+	display: block;
+	margin: 0 auto;
+	vertical-align: middle;
+}
+#alum-title-ph {
+	background: #e1e1e1;
+	border: 1px solid #999;
+	height: 50px;
+	width: 100%;
+	display: block;
+}
+#alum-desc-ph {
+	background: #e1e1e1;
+	border: 1px solid #999;
+	height: 150px;
+	width: 80%;
+	display: block;
+}
+#alum-posts-ph {
+	
+}
+.alum-post-ph {
+	background: #e1e1e1;
+	border: 1px solid #999;
+	height: 30px;
+	width: 100%;
+	display: block;
+}
+				
+				
+#alum-logo {
+	width: 160px;
+	height: 160px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: block;
+	margin: 0 auto;
+	vertical-align: middle;
+	border: 1px solid #0984c4;
+	position:relative;
+	z-index: 4;
+}
+
+#alum-logo img {
+	width: 160px;
+	height: 160px;
+}
+
+.alum-title {
+	font-size: 26px;
 	background-color: #0984c4;
 	color: #fff;
-	margin:  0 -15% 20px;
+	margin: 10px -15% 20px;
 	padding: 10px 15%;
 	text-shadow: none;
+	position: relative;
+	z-index: 3;
+	text-align: center;
+}
+
+.alum-title-logo {
+	font-size: 26px;
+	background-color: #0984c4;
+	color: #fff;
+	margin: -30px -15% 20px;
+	padding: 35px 15% 10px 15%;
+	text-shadow: none;
+	position: relative;
+	z-index: 3;
+	text-align: center;
 }
 
 h2.section-title {
@@ -502,6 +610,24 @@ h2.section-title {
 .alum-photo-meta, .alum-comp-meta { text-align: center; font-size: 13px; text-transform: uppercase; color: #999; }
 
 #photoPreview { height: 250px; width: auto; }
+.selectPhotoBtn {
+	width: 100%;
+	text-align: center;
+	border: 1px solid #ccc;
+	background: #fff;
+	font-size: 18px;
+	padding: 20px;
+	border-radius: 4px;
+    -webkit-border-radius: 4px;
+    box-sizing: border-box;
+    color: #999;
+	text-transform: uppercase;
+}
+
+.selectPhotoBtn i {
+	font-size: 26px;
+	display: block;
+}
 
 .member-table-avatar {
 	height: 30px;
@@ -621,7 +747,8 @@ h2.section-title {
 
 /* Posts Page */
 .post-page-post {
-	
+	padding: 20px 0;
+	border-bottom: 1px solid #ccc;
 }
 .post-page-avatar {
 	width: 120px;
@@ -642,18 +769,96 @@ h2.section-title {
 
 
 .post-page-author{
-	
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
 }
 .post-page-meta {
-	
+	font-size: 12px;
+	color: #999;
+	text-align: center;
+	margin-bottom: 15px;
 }
 .post-page-title {
-	
-	
+	font-size: 24px;
+	text-align: center;
+	color: #0984c4;
 }
 .post-page-content {
 	
 }
+
+/* Photos Page */
+.photo-page-photo {
+	margin: 20px 0;
+}
+
+.photo-page-img {
+	
+}
+
+.photo-page-img img {
+	max-width: 100%;
+	height: auto;
+}
+
+
+.photo-page-caption {
+	text-align: center;
+}
+
+/* Toggle Switch */
+.toggle {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.toggle-switch {
+  display: inline-block;
+  background: #ccc;
+  border-radius: 16px;
+  width: 58px;
+  height: 32px;
+  position: relative;
+  vertical-align: middle;
+  transition: background 0.25s;
+}
+.toggle-switch:before, .toggle-switch:after {
+  content: "";
+}
+.toggle-switch:before {
+  display: block;
+  background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: left 0.25s;
+}
+.toggle:hover .toggle-switch:before {
+  background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+}
+.toggle-checkbox:checked + .toggle-switch {
+  background: #0984c4;
+}
+.toggle-checkbox:checked + .toggle-switch:before {
+  left: 30px;
+}
+
+.toggle-checkbox {
+  position: absolute;
+  visibility: hidden;
+}
+
+.toggle-label {
+  margin-left: 5px;
+  position: relative;
+  top: 2px;
+}		
 				
 /* Timeline */
 
@@ -894,8 +1099,18 @@ h3.timeline-title {
 
 /* Mobile Only */
 
-@media only screen and (max-width: 600px) {
-
+@media only screen and (max-width: 480px) {
+	
+	[data-role=modal] {
+		width: 100%;
+		height: 100%;
+		max-height: 100%;
+		top: 0;
+		left: 0;
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+	
 	.member-table-name {
 		max-width: 150px;
 		white-space: nowrap;

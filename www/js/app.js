@@ -95,16 +95,77 @@ var app = {
 
 function onContactSuccess(contacts) {
 	//Must ajax back to site to compare contacts
-/*
-		$.ajax({
-			type: "GET",
-			url: "https://ouralum.com/api/v1/",
-			success: function (data) {
-				alert("YES");
-			},
-			error: 
-		}) 
-*/		
+	var user_id = getStorage('oa_user_id');
+	//alert(user_id);
+	$.mobile.loading( "show", { theme: "z", text: "Fetching your contacts list", textVisible: true} );
+	//alert(contacts);
+	var c = JSON.stringify(contacts);
+	//{ user_id : user_id, contacts: JSON.stringify(contacts) }
+	//alert("DATA: " + data);
+	var request = $.ajax({
+		url: serviceURL + 'invite_list',
+	  	method: "POST",
+	  	data: { user_id : user_id, contacts: c },
+	  	dataType: "html",
+	});
+	request.done(function( data ) {
+		//alert(data );
+		var obj = $.parseJSON( data );
+		if(obj.msg === 'success') {
+			if(obj.data !== '' && obj.data !== null && obj.data !== undefined) {
+				var contacts_html = '<div id="clist"><p>Choose Who To Send An Invite To:</p><form id="clistFrm"><ul>';
+				$.each( obj.data, function( key, contact ) {
+					contacts_html += '<li>';
+					
+					contacts_html += '<span class="clist-select">';
+					/*
+					contacts_html += '<select name="import_' + i + '" id="import-' + i + '" data-role="flipswitch" data-mini="true" data-theme="b">';
+					contacts_html += '<option value="off">No</option>';
+					contacts_html += '<option value="on">Yes</option>';
+					contacts_html += '</select>';
+					*/
+					contacts_html += '<label class="toggle">';
+					contacts_html += '<input type="hidden" name="member_phone[' + key + ']" value="' + contact.phone + '">';
+					contacts_html += '<input type="hidden" name="member_email[' + key + ']" value="' + contact.email + '">';
+					contacts_html += '<input class="toggle-checkbox" type="checkbox" name="send_invite[' + key + ']" value="' + key + '">';
+					contacts_html += '<div class="toggle-switch"></div>';
+					contacts_html += '<span class="toggle-label"></span>';
+					contacts_html += '</label>';
+					contacts_html += '</span>';
+					
+					contacts_html += '<span class="clist-data">';
+					contacts_html += '<span class="clist-name">' + contact.name + '</span>';
+					contacts_html += '<span class="clist-contact">';
+					if(contact.email !== null) {
+						contacts_html += contact.email + "<br>\n";	
+					}
+					if(contact.phone !== null) {
+						contacts_html += contact.phone + "<br>\n";	
+					}
+					contacts_html += '</span>';
+					contacts_html += '</span>';
+					contacts_html += '</li>';
+				});
+				contacts_html += '</ul></form></div>';
+			}
+			$('#save-button').show();
+			$.mobile.loading( "hide" );
+		}
+		else {
+			contacts_html += 'No contact found';
+		}
+		$('#contact-list').html(contacts_html);
+		$.mobile.loading( "hide" );
+	});
+	 
+	request.fail(function( jqXHR, textStatus, errorThrown ) {
+	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	//var err = eval("(" + jqXHR.responseText + ")");
+	  	var err = $.parseJSON(jqXHR.responseText)
+  		alert(err.Message);
+	  	$.mobile.loading( "hide" );
+	});
+	/*
 	var contacts_html = '<div id="clist"><p>Choose Who To Send An Invite To:</p><form><ul>';
 	for (var i = 0; i < contacts.length; i++) {
 		contacts_html += '<li>';
@@ -128,6 +189,7 @@ function onContactSuccess(contacts) {
 		contacts_html += '</li>';
 	}
 	contacts_html += '</ul></form></div>';
+	*/
 	//var parentElement = document.getElementById('registration');
 	//var receivedElement = parentElement.querySelector('.received');
 	//document.getElementById('registration').innerHTML = contacts_html;
@@ -135,7 +197,7 @@ function onContactSuccess(contacts) {
 	//$('#invite-members').find('[data-role="content"]').html(contacts_html);
 	/*$('#invite-members').find('[data-role="content"]').html(contacts_html);
 	$('#invite-members').find('.app').html(contacts_html);*/
-	$('#contact-list').html(contacts_html);
+	
 }
 
 // onError: Failed to get the contacts
@@ -144,8 +206,43 @@ function onError(contactError) {
 	alert('onError!');
 }
 
+$(document).on('click', '#sendInviteList', function() {
+	var formData = $('#clistFrm').serializeArray();
+	var user_id = getStorage('oa_user_id');
+	formData.push({name: 'user_id', value: user_id});
+	//alert(formData);
+	$.mobile.loading( "show", { theme: "z", text: "Sending Invitations, please be patient", textVisible: true} );
+	var request = $.ajax({
+		url: serviceURL + 'send_invite_list',
+	  	method: "POST",
+	  	data: formData,
+	  	dataType: "html"
+	});
+	request.done(function( data ) {
+		//alert(data );
+		obj = $.parseJSON( data );
+		if(obj.msg === 'success') {
+			$('body').prepend('<div class="alert-popup alert-info">Your invitations have been sent!</div>');
+			setTimeout(function(){
+				$('.alert-popup').fadeOut('slow', function() { $(this).remove(); });
+			}, 2000);
+
+		}
+		else {
+			//show error
+			
+		}
+		$.mobile.loading( "hide" );
+	});
+	 
+	request.fail(function( jqXHR, textStatus, errorThrown ) {
+	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	$.mobile.loading( "hide" );
+	});
+});
+
 $(document).on( "click", ".loginBtn", function() {
-	$.mobile.loading( "show" );
+	$.mobile.loading( "show", { theme: "z", text: "", textVisible: true} );
 	var username = $('#user_name').val();
 	var password = $('#user_password').val();
 	//ajax for login...
@@ -204,7 +301,8 @@ $(document).on( "pagecreate", "#home", function(event) {
         
 $(document).on( "pageshow", "#alumns-page", function(event) {
 	//Get Alumns
-	$.mobile.loading( "show" );
+	//$.mobile.loading( "show" );
+	$.mobile.loading( "show", { theme: "z", text: "Loading", textVisible: true} );
 	var user_id = getStorage('oa_user_id');
 	var request = $.ajax({
 		url: serviceURL + 'alumns',
@@ -260,7 +358,8 @@ $(document).on( "pageshow", "#alumns-page", function(event) {
 });
 
 $(document).on( "pageshow", "#alumn-page", function(event) {
-	$.mobile.loading( "show" );
+	//$.mobile.loading( "show" );
+	$.mobile.loading( "show", { theme: "z", text: "Getting Alumn Info", textVisible: true} );
 	$('#alumn').html('');
 	var id = getUrlParameter('id');
 	var user_id = getStorage('oa_user_id');
@@ -277,7 +376,13 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 		if(obj.msg === 'success') {
 			var html = '';
 			//
-			html += '<div id="alum-title">' + obj.data.group_name + '</div>';
+			var title_css = 'alum-title';
+			if(obj.data.logo_src !== null && obj.data.logo_src !== undefined) {
+				html += '<div id="alum-logo"><img src="' + obj.data.logo_src + '"></div>';
+				title_css = 'alum-title-logo';
+			}
+			
+			html += '<div id="alum-title" class="' + title_css + '">' + obj.data.group_name + '</div>';
 //alert("DESC: " + obj.data.group_description);
 			if(obj.data.group_description !== null && obj.data.group_description !== '' && obj.data.group_description !== 'null') {
 				html += '<div id="alum-desc">' + obj.data.group_description + '</div>';
@@ -355,7 +460,7 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 				html += '<div id="alum-members">';
 				html += '<h2 class="section-title">Alum Members</h2>';
 				html += '<div class="table-filter"><b>Filter By Initiation Year:</b>';
-				html += '<select name="init_year">';
+				html += '<select id="member_tableFilter_init" name="init_year">';
 				html += '<option value="">Choose Year</option>';
 				var y = (new Date()).getFullYear();
 				var min_year = parseInt(y) - 100;
@@ -364,12 +469,15 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 				}
 				html += '</select>';
 				html += '</div>';
-				html += '<div class="table-search"><b>Search:</b> <input type="text" name="member-search"></div>';
+				html += '<div class="table-search"><b>Search:</b> <input type="text" name="member_search"></div>';
 				html += '<small>(D) = Deceased</small>';
-				html += '<div class="responsive-table">';
-				html += '<table class="table"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead></tbody>';
-
+				html += '<div class="responsive-table" id="members-table-container">';
+				html += '<div class="table-results-count">' + obj.data.members.length + ' Members Found</div>';
+				html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
+				var t = '';
 				$.each( obj.data.members , function( key, member ) {
+					t += buildMembersTable(id, user_id, member);
+					/*
 					var location = (member.city !== '' && member.city !== null) ? member.city + ', ' + member.state : '';
 					var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<button type="button" class="btn btn-sm sendInviteBtn" data-id="' + member.id + '" data-user="' + user_id + '" data-group="' + id + '" data-name="' + member.first_name + ' ' + member.last_name +'" style="margin-top: 12px;">Send Invite</button>';
 					html += '<tr><td nowrap><a href="member.html?id=' + member.id + '" data-role="none" data-transition="slide">';
@@ -382,14 +490,16 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 					}
 					html += '</div>';
 					html += '<div class="member-table-location">' + location + '</div>';
-					html += '<div class="member-table-init">Initiation Date: ' + member.init_date_format + '</div></div>';
+					html += '<div class="member-table-init">Initiation Date: ' + member.init_date_format + '</div></div></td>';
 					html += '<td nowrap>' + claimed_profile + '</td></tr>';
+					*/
 				});
+				html += t;
 				html += '</tbody></table>';
 				html += '</div>';
 				html += '</div>';
 			}
-//alert(html);
+alert(html);
 			$('#alumn').show();
             $('#alumn').html(html);
 			//Do the carosel
@@ -410,8 +520,8 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 
 
 $(document).on( "pageshow", "#member-page", function(event) {
-	$.mobile.loading( "show" );
-	
+	//$.mobile.loading( "show" );
+	$.mobile.loading( "show", { theme: "z", text: "Loading Member Profile", textVisible: true} );
 	$('#member-profile').html('');
 	
 	var id = getUrlParameter('id');
@@ -554,7 +664,8 @@ $(document).on( "pagecreate", "#invite-members", function(event) {
 });
 
 $(document).on( "pageshow", "#posts-page", function(event) {
-	$.mobile.loading( "show" );
+	//$.mobile.loading( "show" );
+	$.mobile.loading( "show", { theme: "z", text: "Loading Posts", textVisible: true} );
 	$('#posts').html('');
 	
 	var id = getUrlParameter('id');
@@ -566,16 +677,17 @@ $(document).on( "pageshow", "#posts-page", function(event) {
 	  	dataType: "html"
 	});
 	request.done(function( data ) {
-		alert(data );
+		//alert(data );
 		var obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
 			var html = '';
 			$.each( obj.data, function( key, value ) {
 				html += '<div id="post-div=' + value.ID + '" class="post-page-post">';
+				html += '<div class="post-page-title">' + value.post_title + '</div>';
 				html += '<div class="post-page-avatar">' + value.avatar_img + '</div>';
 				html += '<div class="post-page-author">' + value.author + '</div>';
-				html += '<div class="post-page-meta">' + value.post_title + '</div>';
-				html += '<div class="post-page-title">' + value.post_title + '</div>';
+				html += '<div class="post-page-meta">Posted ' + value.post_date_formatted + '</div>';
+				
 				html += '<div class="post-page-content">' + value.post_content + '</div>';
 				html += '</div>';
 			});
@@ -595,7 +707,8 @@ $(document).on( "pageshow", "#posts-page", function(event) {
 });
 
 $(document).on( "pagecreate", "#photos-page", function(event) {
-	$.mobile.loading( "show" );
+	//$.mobile.loading( "show" );
+	$.mobile.loading( "show", { theme: "z", text: "Loading Photos", textVisible: true} );
 	$('#photos').html('');
 	
 	var id = getUrlParameter('id');
@@ -607,14 +720,22 @@ $(document).on( "pagecreate", "#photos-page", function(event) {
 	  	dataType: "html"
 	});
 	request.done(function( data ) {
-		alert(data );
+		//alert(data );
 		var obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
-			
+			var html = '';
+			$.each( obj.data, function( key, value ) {
+				html += '<div id="photo-div=' + value.ID + '" class="photo-page-photo">';
+				html += '<div class="photo-page-img"><img src="' + value.photo_url + '"></div>';
+				html += '<div class="photo-page-caption">' + value.caption + '</div>';
+				html += '</div>';
+			});
+			$('#photos').html(html);
 		}
 		else {
 		
 		}
+
 		$.mobile.loading( "hide" );
 	});
 	 
@@ -672,7 +793,8 @@ $(document).on('click', '.sendInviteBtn', function () {
 
 $(document).on('click', '.submitPhoto', function () {
 	//Ajax...
-	$.mobile.loading( "show" );
+	//$.mobile.loading( "show" );
+	$.mobile.loading( "show", { theme: "z", text: "Submitting Photo", textVisible: true} );
 	var form = document.getElementById('upload-photo-frm');
 	formData = new FormData(form); 
 	var request = $.ajax({
@@ -685,7 +807,7 @@ $(document).on('click', '.submitPhoto', function () {
         processData: false,
 	});
 	request.done(function( data ) {
-		alert(data );
+		//alert(data );
 		obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
 			$('#upload-photo-frm input[name="user_id"]').val('');
@@ -700,7 +822,7 @@ $(document).on('click', '.submitPhoto', function () {
 			//Alert popup
 			$('body').prepend('<div class="alert-popup alert-info">Your photo has been submitted!</div>');
 			setTimeout(function(){
-				$('.alert-popup').fadeOut().remove();
+				$('.alert-popup').fadeOut('slow', function() { $(this).remove(); });
 			}, 2000);
 		}
 		else {
@@ -727,7 +849,8 @@ $(document).on('change', 'input[name="photo"]', function () {
 });
 
 $(document).on('click', '.submitInvite', function () {
-	$.mobile.loading( "show" );
+	//$.mobile.loading( "show" );
+	$.mobile.loading( "show", { theme: "z", text: "Sending Invitation", textVisible: true} );
 	var member_id = $('#invite-member-frm input["member_id"]').val();
 	var user_id = $('#invite-member-frm input["user_id"]').val();
 	var group_id = $('#invite-member-frm input["group_id"]').val();
@@ -761,6 +884,109 @@ $(document).on('click', '.submitInvite', function () {
 		$.mobile.loading( "hide" );
 	});
 	
+});
+
+$(document).on('change', '#member_tableFilter_init', function() {
+	//search using new filter...
+	//$.mobile.loading( "show" );
+	$.mobile.loading( "show", { theme: "z", text: "Searching", textVisible: true} );
+	var user_id = getStorage('oa_user_id');
+	var id = getUrlParameter('id');
+	var init_year = $(this).val();
+	var search_str = $('input[name="member-search"]').val();
+	//alert(id);
+	var request = $.ajax({
+		url: serviceURL + 'members',
+	  	method: "GET",
+	  	data: { id : id, init_year: init_year, search_str: search_str },
+	  	dataType: "html"
+	});
+	request.done(function( data ) {
+		//alert(data );
+		var obj = $.parseJSON( data );
+		if(obj.msg === 'success') {
+			var html = '';
+			html += '<div class="table-results-count">' + obj.data.length + ' Members Found</div>';
+			html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
+			if(obj.data !== '' && obj.data !== null && obj.data !== undefined) {
+				var t = '';
+				$.each( obj.data, function( key, member ) { 
+					//alert(member.id);
+					t += buildMembersTable(id, user_id, member);			
+				});
+				html += t; 
+				html += '</tbody><table>';
+				//alert(html);
+				$('#members-table-container').html(html);
+			}
+			else {
+				alert("No Results");
+			}
+			$.mobile.loading( "hide" );
+		}
+		else {
+		
+		}
+
+		$.mobile.loading( "hide" );
+	});
+	 
+	request.fail(function( jqXHR, textStatus, errorThrown ) {
+	  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+	  	$.mobile.loading( "hide" );
+	});
+});
+
+$(document).on('keyup', 'input[name="member_search"]', function() {
+	//search using new filter...
+	var user_id = getStorage('oa_user_id');
+	var id = getUrlParameter('id');
+	var init_year = $('#member_tableFilter_init').val();
+	var search_str = $(this).val();
+	if(search_str.length > 3) {
+		$.mobile.loading( "show", { theme: "z", text: "Searching", textVisible: true} );
+		//alert(id);
+		var request = $.ajax({
+			url: serviceURL + 'members',
+		  	method: "GET",
+		  	data: { id : id, init_year: init_year, search_str: search_str },
+		  	dataType: "html"
+		});
+		request.done(function( data ) {
+			//alert(data );
+			var obj = $.parseJSON( data );
+			if(obj.msg === 'success') {
+				var html = '';
+				html += '<div class="table-results-count">' + obj.data.length + ' Members Found</div>';
+				html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
+				if(obj.data !== '' && obj.data !== null && obj.data !== undefined) {
+					var t = '';
+					$.each( obj.data, function( key, member ) { 
+						//alert(member.id);
+						t += buildMembersTable(id, user_id, member);			
+					});
+					html += t; 
+					html += '</tbody><table>';
+					//alert(html);
+					$('#members-table-container').html(html);
+				}
+				else {
+					alert("No Results");
+				}
+				$.mobile.loading( "hide" );
+			}
+			else {
+			
+			}
+	
+			$.mobile.loading( "hide" );
+		});
+		 
+		request.fail(function( jqXHR, textStatus, errorThrown ) {
+		  	alert( "Request failed: " + textStatus + " - " + jqXHR.responseText);
+		  	$.mobile.loading( "hide" );
+		});
+	}
 });
 
 function setUserToken(oa_user_id, token) {
@@ -931,6 +1157,8 @@ function readURLPhoto(input) {
 			//console.log(e.target.result);
 			$('#photoPreview').attr('src', e.target.result);
 			EXIF.getData(input.files[0], function() {
+				var allMetaData = EXIF.getAllTags(this);
+				$('input[name="exif_data"]').val(allMetaData);
 				// Fetch image tag
 	   			var img = $("#photoPreview").get(0);
 	           	// Fetch canvas
@@ -943,6 +1171,25 @@ function readURLPhoto(input) {
 
 		reader.readAsDataURL(input.files[0]);
 	}
+}
+
+function buildMembersTable(id, user_id, member) {
+	var td = '';
+	var location = (member.city !== '' && member.city !== null) ? member.city + ', ' + member.state : '';
+	var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<button type="button" class="btn btn-sm sendInviteBtn" data-id="' + member.id + '" data-user="' + user_id + '" data-group="' + id + '" data-name="' + member.first_name + ' ' + member.last_name +'" style="margin-top: 12px;">Send Invite</button>';
+	td += '<tr><td nowrap><a href="member.html?id=' + member.id + '" data-role="none" data-transition="slide">';
+	if(member.avatar !== '' && member.avatar !== undefined && member.avatar !== null) {
+		td += '<div class="member-table-avatar">' + member.avatar + '</div>';
+	}
+	td += '<div class="member-table-meta"><div class="member-table-name">' + member.first_name + ' ' + member.last_name + '</a>';
+	if(member.deceased === true) {
+		td += ' <small>(D)</small>';
+	}
+	td += '</div>';
+	td += '<div class="member-table-location">' + location + '</div>';
+	td += '<div class="member-table-init">Initiation Date: ' + member.init_date_format + '</div></div></td>';
+	td += '<td nowrap>' + claimed_profile + '</td></tr>';
+	return td;
 }
 
 function orientation(img, canvas) {

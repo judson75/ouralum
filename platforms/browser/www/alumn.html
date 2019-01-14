@@ -30,7 +30,18 @@
 			<div id="logo"><a href="index.html" data-role="none" data-transition="slide" data-direction="reverse"><img src="img/alum_logo.jpg"></a></div>
 			<div id="header-right"></div>
 		</div>
-		<div id="alumn" class="app-page"></div>
+		<div id="alumn" class="app-page">
+			<div id="alum-logo-ph">&nbsp;</div>
+			<div id="alum-title-ph"></div>
+			<div id="alum-desc-ph"></div>
+			<div id="alum-posts-ph">
+				<div class="alum-post-ph"></div>
+				<div class="alum-post-ph"></div>
+				<div class="alum-post-ph"></div>
+				<div class="alum-post-ph"></div>
+			</div>
+			
+		</div>
 	</div>
  	<!-- Photo Upload Modal -->
   	<div data-role="modal" id="photo-upload">
@@ -43,6 +54,7 @@
 				<input type="hidden" name="group_id" value="">
 				<input type="hidden" name="user_id" value="">
 				<input type="hidden" name="photo_data" value="">
+				<input type="hidden" name="exif_data" value="">
 				<div class="form-group">
 					<label>Photo Year:</label>
 					<select name="photo_year">
@@ -55,8 +67,8 @@
 				<div class="form-group">
 					<input type="file" name="photo" style="display: none;" accept="image/*">
 					<img id="photoPreview" class="img-responsive" crossorigin="anonymous" src="" style="display: none;">
-					<canvas id="photoCanvas" style="height: 1px;"></canvas>
-					<button type="button" class="btn btn-sm  btn-primary selectPhotoBtn">Choose Photo</button>
+					<canvas id="photoCanvas" style="height: 0px;"></canvas>
+					<button type="button" class="selectPhotoBtn"><i class="fa fa-mouse-pointer" aria-hidden="true"></i>Choose Photo</button>
 				</div>
 				<div id="submitError"></div>
 				<button type="button" class="btn submitPhoto">Submit Photo</button>
