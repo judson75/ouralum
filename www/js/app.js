@@ -97,7 +97,7 @@ function onContactSuccess(contacts) {
 	//Must ajax back to site to compare contacts
 	var user_id = getStorage('oa_user_id');
 	//alert(user_id);
-	$.mobile.loading( "show", { theme: "z", text: "Fetching your contacts list", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Fetching your contacts list", textVisible: true} );
 	//alert(contacts);
 	var c = JSON.stringify(contacts);
 	//{ user_id : user_id, contacts: JSON.stringify(contacts) }
@@ -110,10 +110,11 @@ function onContactSuccess(contacts) {
 	});
 	request.done(function( data ) {
 		//alert(data );
+		var contacts_html = '';
 		var obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
 			if(obj.data !== '' && obj.data !== null && obj.data !== undefined) {
-				var contacts_html = '<div id="clist"><p>Choose Who To Send An Invite To:</p><form id="clistFrm"><ul>';
+				contacts_html += '<div id="clist"><p>Choose Who To Send An Invite To:</p><form id="clistFrm"><ul>';
 				$.each( obj.data, function( key, contact ) {
 					contacts_html += '<li>';
 					
@@ -147,12 +148,15 @@ function onContactSuccess(contacts) {
 					contacts_html += '</li>';
 				});
 				contacts_html += '</ul></form></div>';
+				$('#save-button').show();
 			}
-			$('#save-button').show();
+			else {
+				contacts_html += '<div id="no-found-contacts"><p>No Alum Members Found in Your Contacts.</p><p>You can go to an Alum page and send invitations from the Members List.</p></div>';
+			}
 			$.mobile.loading( "hide" );
 		}
 		else {
-			contacts_html += 'No contact found';
+			contacts_html += '<div id="no-found-contacts">No Contact Found</div>';
 		}
 		$('#contact-list').html(contacts_html);
 		$.mobile.loading( "hide" );
@@ -211,7 +215,7 @@ $(document).on('click', '#sendInviteList', function() {
 	var user_id = getStorage('oa_user_id');
 	formData.push({name: 'user_id', value: user_id});
 	//alert(formData);
-	$.mobile.loading( "show", { theme: "z", text: "Sending Invitations, please be patient", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Sending Invitations, please be patient", textVisible: true} );
 	var request = $.ajax({
 		url: serviceURL + 'send_invite_list',
 	  	method: "POST",
@@ -242,7 +246,7 @@ $(document).on('click', '#sendInviteList', function() {
 });
 
 $(document).on( "click", ".loginBtn", function() {
-	$.mobile.loading( "show", { theme: "z", text: "", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "", textVisible: true} );
 	var username = $('#user_name').val();
 	var password = $('#user_password').val();
 	//ajax for login...
@@ -296,13 +300,14 @@ $(document).on( "pagecreate", "#home", function(event) {
     if(oa_user_id !== null && oa_user_id !== false && oa_user_id !== '' && oa_user_id !== undefined) {
     	//alert("HERE THREE!");
     	$('#home-buttons').show();
+		getmemberCountHome();
     }
 });  
         
 $(document).on( "pageshow", "#alumns-page", function(event) {
 	//Get Alumns
 	//$.mobile.loading( "show" );
-	$.mobile.loading( "show", { theme: "z", text: "Loading", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Loading", textVisible: true} );
 	var user_id = getStorage('oa_user_id');
 	var request = $.ajax({
 		url: serviceURL + 'alumns',
@@ -360,7 +365,7 @@ $(document).on( "pageshow", "#alumns-page", function(event) {
 //event.preventDefault();
 //$(document).on('pageinit', '#alumn-page', function(){
 $(document).on( "pageshow", "#alumn-page", function(event) {
-	$.mobile.loading( "show", { theme: "z", text: "Getting Alumn Info", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Getting Alumn Info", textVisible: true} );
 	//$('#alumn').html('');
 	var id = getUrlParameter('id');
 	var user_id = getStorage('oa_user_id');
@@ -627,7 +632,7 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 
 $(document).on( "pageshow", "#member-page", function(event) {
 	//$.mobile.loading( "show" );
-	$.mobile.loading( "show", { theme: "z", text: "Loading Member Profile", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Loading Member Profile", textVisible: true} );
 	//$('#member-profile').html('');
 	var id = getUrlParameter('id');
 	//alert(id);
@@ -761,7 +766,7 @@ $(document).on( "pageshow", "#member-page", function(event) {
 });
 
 $(document).on( "pageshow", "#jobs-page", function(event) {
-	$.mobile.loading( "show", { theme: "z", text: "Loading Jobs", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Loading Jobs", textVisible: true} );
 	var id = getUrlParameter('id');
 	var request = $.ajax({
 		url: serviceURL + 'jobs',
@@ -806,7 +811,7 @@ $(document).on( "pageshow", "#jobs-page", function(event) {
 });
 
 $(document).on( "pageshow", "#job-page", function(event) {
-	$.mobile.loading( "show", { theme: "z", text: "Loading Job", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Loading Job", textVisible: true} );
 	var id = getUrlParameter('id');
 	
 	
@@ -824,7 +829,7 @@ $(document).on( "pagecreate", "#invite-members", function(event) {
 
 $(document).on( "pageshow", "#posts-page", function(event) {
 	//$.mobile.loading( "show" );
-	$.mobile.loading( "show", { theme: "z", text: "Loading Posts", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Loading Posts", textVisible: true} );
 	$('#posts').html('');
 	
 	var id = getUrlParameter('id');
@@ -868,7 +873,7 @@ $(document).on( "pageshow", "#posts-page", function(event) {
 
 $(document).on( "pagecreate", "#photos-page", function(event) {
 	//$.mobile.loading( "show" );
-	$.mobile.loading( "show", { theme: "z", text: "Loading Photos", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Loading Photos", textVisible: true} );
 	$('#photos').html('');
 	
 	var id = getUrlParameter('id');
@@ -957,7 +962,7 @@ $(document).on('click', '.submitPhoto', function () {
 	//$.mobile.loading( "show" );
 	$('div').removeClass('hasError');
 	$('.helper.error').remove();
-	$.mobile.loading( "show", { theme: "c", text: "Submitting Photo", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Submitting Photo", textVisible: true} );
 	var form = document.getElementById('upload-photo-frm');
 	formData = new FormData(form);
 	//Validation
@@ -1037,7 +1042,7 @@ $(document).on('change', 'input[name="photo"]', function () {
 
 $(document).on('click', '.submitInvite', function () {
 	//$.mobile.loading( "show" );
-	$.mobile.loading( "show", { theme: "z", text: "Sending Invitation", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Sending Invitation", textVisible: true} );
 	var member_id = $('#invite-member-frm input["member_id"]').val();
 	var user_id = $('#invite-member-frm input["user_id"]').val();
 	var group_id = $('#invite-member-frm input["group_id"]').val();
@@ -1086,7 +1091,7 @@ $(document).on('blur', 'input[name="photo_caption"]', function() {
 $(document).on('change', '#member_tableFilter_init', function() {
 	//search using new filter...
 	//$.mobile.loading( "show" );
-	$.mobile.loading( "show", { theme: "z", text: "Searching", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Searching", textVisible: true} );
 	var user_id = getStorage('oa_user_id');
 	var id = getUrlParameter('id');
 	var init_year = $(this).val();
@@ -1166,7 +1171,7 @@ $(document).on('keyup', 'input[name="member_search"]', function() {
 	var init_year = $('#member_tableFilter_init').val();
 	var search_str = $(this).val();
 	//if(search_str.length > 3) {
-		$.mobile.loading( "show", { theme: "z", text: "Searching", textVisible: true} );
+		$.mobile.loading( "show", { theme: "a", text: "Searching", textVisible: true} );
 		//alert(id);
 		var request = $.ajax({
 			url: serviceURL + 'members',
@@ -1240,7 +1245,7 @@ $(document).on('click', '.goToMPage', function() {
 	var page = $(this).data('page');
 	var init_year = $('#member_tableFilter_init').val();
 	var search_str = $('input[name="member-search"]').val();
-	$.mobile.loading( "show", { theme: "z", text: "Loading", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Loading", textVisible: true} );
 	//alert(id);
 	var request = $.ajax({
 		url: serviceURL + 'members',
@@ -1321,7 +1326,7 @@ $(document).on('click', '.sendAlumContact', function () {
 	$('.helper.error').remove();
 	var err_count = 0;
 	
-	$.mobile.loading( "show", { theme: "z", text: "Sending your contact", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Sending your contact", textVisible: true} );
 	if($('input[name="sender_name"]').val() === '') {
 		$('input[name="sender_name"]').parent().addClass('hasError');
 		$('input[name="sender_name"]').after('<div class="helper error">Please enter your name</div>');
@@ -1581,6 +1586,31 @@ function buildMembersTable(id, user_id, member) {
 	td += '<div class="member-table-init">Initiation Date: ' + member.init_date_format + '</div></div></td>';
 	td += '<td nowrap>' + claimed_profile + '</td></tr>';
 	return td;
+}
+
+function getmemberCountHome() {
+	var request = $.ajax({
+		url: serviceURL + 'member_count_home',
+	  	method: "GET",
+	  	data: '',
+	  	dataType: "html"
+	});
+	 
+	request.done(function( data ) {
+		//alert(data);
+		obj = $.parseJSON( data );
+		if(obj.code === 1) {
+			var html = '';
+			html += '<i class="fa fa-users" aria-hidden="true"></i>';
+			html += '<h3>' + obj.data + '</h3>';
+			html += '<p>Alumni Members</p>';
+			$('#members-count-home').html(html);
+		}
+		else {
+			//show error
+			
+		}
+	});
 }
 
 function orientation(img, canvas) {

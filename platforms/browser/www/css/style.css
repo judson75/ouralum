@@ -139,6 +139,35 @@ ul {
 	display: none;
 }
 
+#members-count-home {
+	text-align: center;
+	padding: 30px 0;
+}
+
+
+#members-count-home i {
+	font-size: 82px;
+	color: #0984c4;
+}
+
+#members-count-home h3 {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 700;
+	font-size: 48px;
+	margin: 10px 0 10px 0;
+	line-height: 1em;
+}
+
+#members-count-home p {
+	margin: 0;
+	color: #999999;
+}
+
+#no-found-contacts {
+	font-size: 18px;
+	text-align: center;
+	margin-top: 40px;
+}
 
 /* Landscape layout (with min-width) */
 @media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
