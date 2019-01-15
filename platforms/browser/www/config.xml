@@ -58,6 +58,7 @@
         PhoneGap Team
     </author>
     <content src="index.html" />
+    <splash src="splash.png" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -70,4 +71,5 @@
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#ee6e73" />
     <preference name="StatusBarStyle" value="blacktranslucent" />
+    <preference name="SplashScreen" value="screen" />
 </widget>

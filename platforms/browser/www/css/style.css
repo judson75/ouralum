@@ -46,6 +46,7 @@ body {
    /* text-transform:uppercase; */
     width:100%;
 }
+.ui-overlay-a { background-color:#FFF; }
 
 input:focus, button:focus, select:focus, textarea:focus {outline:none;}
 
@@ -522,7 +523,7 @@ textarea {
 	margin: 0 auto 15px auto;
 	vertical-align: middle;
 }
-#alum-title-ph {
+.alum-title-ph {
 	background: #fafafa;
 	border: 1px solid #e1e1e1;
 	height: 50px;
@@ -530,7 +531,7 @@ textarea {
 	display: block;
 	margin: 0 auto 10px auto;
 }
-#alum-desc-ph {
+.alum-desc-ph {
 	background: #fafafa;
 	border: 1px solid #e1e1e1;
 	height: 150px;
@@ -538,7 +539,7 @@ textarea {
 	display: block;
 	margin: 0 auto 10px auto;
 }
-#alum-posts-ph {
+.alum-posts-ph {
 	
 }
 .alum-post-ph {
@@ -549,6 +550,8 @@ textarea {
 	display: block;
 	margin: 0 auto 10px auto;
 }
+
+#member-profile .alum-posts-ph { margin-bottom: 25px; }
 				
 				
 #alum-logo {

@@ -346,13 +346,19 @@ $(document).on( "pageshow", "#alumns-page", function(event) {
 				html += '</li>';
 			});
 			html += '</ul>';
-            $('#alum-list').html(html);
+			setTimeout(function(){
+				$('#alum-list').html(html);
+				$.mobile.loading( "hide" );
+				
+			}, 200);
+            
 		}
 		else {
 			//show error
-			
+			alert("Alumns page error");
+			$.mobile.loading( "hide" );
 		}
-		$.mobile.loading( "hide" );
+		
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
@@ -601,26 +607,32 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 			
 			
 //alert(html);
-			$('#alumn_content').show();
+			//$('#alumn_content').show();
             //$('#alumn').html(html);
-			$('#alumn_content').hide().html(html).fadeIn();
-//alert("HERE");
-			
-			//Do the carosel
-			if($('#comp-carosel').length) {
-				applyCarosel('comp-carosel');
-			}
-			if($('#photo-carosel').length) {
-				applyCarosel('photo-carosel');
-			}
-			
+			setTimeout(function(){
+				$('#alumn_content').hide().html(html).fadeIn();
+				//if($('#alumn_content').html() == '') {
+
+				//}
+	//alert("HERE");
+
+				//Do the carosel
+				if($('#comp-carosel').length) {
+					applyCarosel('comp-carosel');
+				}
+				if($('#photo-carosel').length) {
+					applyCarosel('photo-carosel');
+				}
+				$.mobile.loading( "hide" );
+			}, 200);
 			
 		}
 		else {
 			//show error
-			
+			alert("Alumn page error");
+			$.mobile.loading( "hide" );
 		}
-		$.mobile.loading( "hide" );
+		
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
@@ -646,19 +658,18 @@ $(document).on( "pageshow", "#member-page", function(event) {
 		//alert(data );
 		var obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
-			$.mobile.loading( "hide" );
 			var html = '';
 			//
 			var full_name = '';
-			if(obj.data.salutation !== null) {
+			if(obj.data.salutation !== null && obj.data.salutation !== undefined) {
 				full_name += obj.data.salutation + ' ';
 			}
 			full_name += obj.data.first_name + ' ';
-			if(obj.data.middle_name !== null) {
+			if(obj.data.middle_name !== null && obj.data.middle_name !== undefined) {
 				full_name += obj.data.middle_name + ' ';
 			}
 			full_name += obj.data.last_name;
-			if(obj.data.suffix !== null) {
+			if(obj.data.suffix !== null && obj.data.suffix !== undefined) {
 				full_name += ', ' + obj.data.suffix;
 			}
 			
@@ -753,10 +764,21 @@ $(document).on( "pageshow", "#member-page", function(event) {
 			if(obj.data.timeline !== null && obj.data.timeline !== undefined) {
 				html += obj.data.timeline;
 			}
+			//alert(html);
+			//$( element ).empty().html( text );
 			//$('#member-profile').html(html);
-			$('#member-profile').hide().html(html).fadeIn();
+			//$('#member-profile').hide().html(html).fadeIn();
+			setTimeout(function(){
+				$('#member-profile').hide().empty().html(html).fadeIn();
+				$.mobile.loading( "hide" );
+			}, 200);
+			
 		}
-		$.mobile.loading( "hide" );
+		else {
+			alert("Member page error");
+			$.mobile.loading( "hide" );
+		}
+		
 	});
 	 
 	request.fail(function( jqXHR, textStatus, errorThrown ) {
@@ -1476,10 +1498,12 @@ function applyCarosel(id) {
 	//right nav trigger
 	$(document).off('click', '#' + id + '-carosel-nav-right').on('click', '#' + id + '-carosel-nav-right',function(e) {
 		e.preventDefault();
+		//alert('t');
 		if(!$('#' + id).parent('.carosel-wrapper').find('.carosel-nav-right').hasClass('disabled')) {
 			cl = cl - cw;
 			lc++;
 			caroselSlide(id, cl, lc, lic);
+			return false;
 		}
 	});
 	//Right swipe
@@ -1501,6 +1525,7 @@ function applyCarosel(id) {
 			cl = cl + cw;
 			lc--;
 			caroselSlide(id, cl, lc, lic);
+			return false;
 		}
 	});
 	//Left Swipe
