@@ -529,7 +529,7 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 				html += '<h2 class="section-title">Support Your Alum Businesses</h2>';
 				$.each( obj.data.ads , function( key, ad ) {
 					html += '<div class="alum-page-ad" id="group-ad-' + ad.id + '">';
-					html += '<a href="member.html?id=' + ad.user_id + '" data-role="none" data-transition="slide"><img src="' + ad.img_url + '" alt=""></a><div style="font-size: 12px; text-align: center; color: #ccc;">Added by ' + ad.user_name + '</div>';
+					html += '<a href="member.html?id=' + ad.member_id + '" data-role="none" data-transition="slide"><img src="' + ad.img_url + '" alt=""></a><div class="alum-ad-meta">Added by ' + ad.user_name + '</div>';
 					//if(ad.user_id === user_id) {
 					//	html += '<br><button type="button" class="btn btn-primary btn-xs deleteAd" data-id="' + ad.id + '">Delete Ad</button>';
 					//}
@@ -543,7 +543,8 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 				html += '<h2 class="section-title">Alum Professions and Job Listings</h2>';
 				$.each( obj.data.jobs , function( key, job ) {
 					html += '<div class="alum-page-job-post">';
-					html += '<h3><a href="job.html?id=' + job.id + '" data-role="none" data-transition="slide">' + job.job_title + '</a></h3>';
+					//html += '<h3><a href="job.html?id=' + job.id + '" data-role="none" data-transition="slide">' + job.job_title + '</a></h3>';
+					html += '<h3>' + job.job_title + '</h3>';
 					if(job.short_desc !== undefined) {				
 						html += '<p>' + job.short_desc + '...</p>';
 					}
@@ -555,6 +556,7 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 			
 			}
 			
+			/*
 			if(obj.data.links !== undefined) {
 				html += '<div id="alum-links">';
 				html += '<h2 class="section-title">Alum Links</h2>';
@@ -573,6 +575,7 @@ $(document).on( "pageshow", "#alumn-page", function(event) {
 				html += '</ul>';
 				html += '</div>';
 			}
+			*/
 			
 			html += '<div id="alum-contact">';
 			html += '<h2 class="section-title">Contact Us</h2>';
@@ -760,8 +763,46 @@ $(document).on( "pageshow", "#member-page", function(event) {
 $(document).on( "pageshow", "#jobs-page", function(event) {
 	$.mobile.loading( "show", { theme: "z", text: "Loading Jobs", textVisible: true} );
 	var id = getUrlParameter('id');
-	
-	$.mobile.loading( "hide" );
+	var request = $.ajax({
+		url: serviceURL + 'jobs',
+	  	method: "GET",
+	  	data: { id : id },
+	  	dataType: "html"
+	});
+	request.done(function( data ) {
+		//alert(data );
+		var obj = $.parseJSON( data );
+		if(obj.msg === 'success') {
+			var html = '';
+			if(obj.data !== undefined) {
+				html += '<div id="jobs-container">';
+				html += '<h2 class="section-title">Alum Jobs</h2>';
+				html += '<ul id="jobs-list">';
+				$.each( obj.data , function( key, job ) {
+					//alert(link.caption);
+					html += '<li><div class="jobs-job-title">' + job.job_title + '</div>';
+					if(job.job_desc !== undefined) {
+						html += '<div class="jobs-job-desc">' + job.job_desc + '</div>';
+					}
+					html += '<div class="jobs-job-contact">' + job.contact_info + '</div></li>';
+				});
+				html += '</ul>';
+				html += '</div>';
+				$('#jobs-content').html(html);
+			}
+		}
+		else {
+		
+		}
+		
+		$.mobile.loading( "hide" );
+	});
+	 
+	request.fail(function( jqXHR, textStatus, errorThrown ) {
+	  	alert( "Request failed Line 752: " + textStatus + " - " + jqXHR.responseText);
+	  	$.mobile.loading( "hide" );
+	});
+
 });
 
 $(document).on( "pageshow", "#job-page", function(event) {
@@ -799,6 +840,7 @@ $(document).on( "pageshow", "#posts-page", function(event) {
 		var obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
 			var html = '';
+			html += '<h2 class="section-title">Alum Posts</h2>';
 			$.each( obj.data, function( key, value ) {
 				html += '<div id="post-div=' + value.ID + '" class="post-page-post">';
 				html += '<div class="post-page-title">' + value.post_title + '</div>';
@@ -842,6 +884,7 @@ $(document).on( "pagecreate", "#photos-page", function(event) {
 		var obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
 			var html = '';
+			html += '<h2 class="section-title">Alum Photos</h2>';
 			$.each( obj.data, function( key, value ) {
 				html += '<div id="photo-div=' + value.ID + '" class="photo-page-photo">';
 				html += '<div class="photo-page-img"><img src="' + value.photo_url + '"></div>';
@@ -1273,9 +1316,32 @@ $(document).on('click', '.sendAlumContact', function () {
 	var sender_name = $('input[name="sender_name"]').val();
 	var sender_email = $('input[name="sender_email"]').val();
 	var sender_comments = $('textarea[name="sender_comments"]').val();
+	//Validation
+	$('div').removeClass('hasError');
+	$('.helper.error').remove();
+	var err_count = 0;
 	
 	$.mobile.loading( "show", { theme: "z", text: "Sending your contact", textVisible: true} );
-	
+	if($('input[name="sender_name"]').val() === '') {
+		$('input[name="sender_name"]').parent().addClass('hasError');
+		$('input[name="sender_name"]').after('<div class="helper error">Please enter your name</div>');
+		err_count++;
+	}
+	if($('input[name="sender_email"]').val() === '') {
+		$('input[name="sender_email"]').parent().addClass('hasError');
+		$('input[name="sender_email"]').after('<div class="helper error">Please enter your email address</div>');
+		err_count++;
+	}
+	if($('textarea[name="sender_comments"]').val() === '') {
+		$('textarea[name="sender_comments"]').parent().addClass('hasError');
+		$('textarea[name="sender_comments"]').after('<div class="helper error">Please enter your comments</div>');
+		err_count++;
+	}
+	if(err_count > 0) {
+		//$('#upload-photo-frm').prepend('<div class="alert alert-error">Please fix errors and resubmit</div>');
+		$.mobile.loading( "hide" );
+		return false;
+	}
 	var request = $.ajax({
 		url: serviceURL + 'group_contact',
 		method: "POST",
@@ -1286,7 +1352,7 @@ $(document).on('click', '.sendAlumContact', function () {
 		alert(data );
 		var obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
-			
+			$('#alum-contact-frm').prepend('<div class="alert alert-success">Your message has been sent!</div>');
 			$.mobile.loading( "hide" );
 		}
 		else {

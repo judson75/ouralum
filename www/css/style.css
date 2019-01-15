@@ -192,7 +192,7 @@ textarea {
 }
 
 .form-group {
-	margin: 5px 0 25px 0;
+	margin: 5px 0 15px 0;
 }
 
 .btn {
@@ -594,6 +594,7 @@ h2.section-title {
 .section-link a {
 	display: block;
 	padding: 10px;
+	margin: 15px 0;
 }
 
 .alum-post-avatar {
@@ -627,7 +628,8 @@ h2.section-title {
 	color: #999;
 }
 
-.alum-photo, .alum-comp {margin-bottom: 25px; }
+.alum-comp {margin-bottom: 15px; }
+.alum-photo {margin-bottom: 2px; }
 .alum-photo-img {}
 .alum-photo-meta, .alum-comp-meta { text-align: center; font-size: 13px; text-transform: uppercase; color: #999; }
 
@@ -687,7 +689,7 @@ h2.section-title {
 }
 
 .table-results-pagination {
-	margin: 20px auto;
+	margin: 0px auto;
 	border-top: 1px solid #ccc;
 	padding: 20px;
 }
@@ -727,6 +729,19 @@ h2.section-title {
 	border-bottom-right-radius: 15px;
 }
 
+.alum-page-ad {
+	margin-top: 20px;
+}
+
+.alum-page-ad img {
+	max-width: 90%;
+	margin: 0 auto;
+}
+
+.alum-ad-meta {
+	font-size: 12px; text-align: center; color: #ccc;
+}
+
 #alum-jobs {}
 .alum-page-job-post {}
 .alum-page-job-post h3 { font-size: 20px; margin: 25px 0 10px 0; }
@@ -737,7 +752,38 @@ h2.section-title {
 #alum-links {}
 #group-links {}
 
+/*Jobs Page */
+#jobs-container
 
+#jobs-list{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#jobs-list li{
+	margin: 0 0 15px 0;
+	padding: 0 0 15px 0;
+	border-bottom: 1px solid #ccc;
+}
+
+.jobs-job-title {
+	font-size: 22px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.jobs-job-desc {
+	font-size: 16px;
+	margin-bottom: 5px;
+}
+
+.jobs-job-contact {
+	font-size: 16px;
+}
+					
+					
+					
 /* Carosel */
 .carosel-wrapper {
 	width: 110%;
