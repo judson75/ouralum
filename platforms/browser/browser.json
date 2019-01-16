@@ -4,7 +4,20 @@
         "uninstalled": []
     },
     "config_munge": {
-        "files": {}
+        "files": {
+            "*-Info.plist": {
+                "parents": {
+                    "NSContactsUsageDescription": [
+                        {
+                            "xml": "<string>We use your contacts to find any friends that are inactive members of OurAlum.com so you can invite them to join.</string>",
+                            "count": 1,
+                            "mode": "merge",
+                            "id": "config.xml"
+                        }
+                    ]
+                }
+            }
+        }
     },
     "installed_plugins": {
         "cordova-plugin-statusbar": {

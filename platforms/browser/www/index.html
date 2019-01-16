@@ -29,14 +29,22 @@
 			<div id="home-buttons">
 				<button class="btn" id="" data-role="none">Search...</button>
 				<a href="alumns.html" class="btn" data-role="none" data-transition="slide">My Alums</a>
-				<a href="invite-members.html" class="btn" data-role="none" data-transition="slide">Invite Members</a>
+				<a id="dlink" href="#access-contacts-dialog" class="btn" data-role="none">Invite Members</a>
 				<button class="btn logoutBtn" id="" data-role="none">Logout</button>
 				<div id="members-count-home"></div>
 			</div>
 			<div id="registration"></div>
 			
 		</div>
-
+		
+		<div data-role="modal" id="access-contacts-dialog" data-title="Access Contacts">
+		  <div data-role="content">
+			<h3>Allow OurAlum access to your contact list</h3>
+			<p>We use your contacts to find any friends that are inactive members of OurAlum.com so you can invite them to join.</p>
+			<a href="invite-members.html" class="btn" data-role="none" data-transition="slide" onclick="hideModal('access-contacts-dialog');">Yes</a>
+			<a href="#" class="btn btn-secondary" data-role="none" onclick="hideModal('access-contacts-dialog');">No</a>
+		  </div>
+		</div>
 		<!-- Dialog only page 
 		<div data-role="dialog" id="dialog">
 			<div data-role="header">

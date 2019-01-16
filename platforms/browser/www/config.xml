@@ -55,7 +55,7 @@
         OurAlum App v1.0
     </description>
     <author email="judsonc75@gmail.com" href="http://ouralum.com">
-        PhoneGap Team
+        OurAlum
     </author>
     <content src="index.html" />
     <splash src="splash.png" />
@@ -66,10 +66,14 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <edit-config file="*-Info.plist" mode="merge" target="NSContactsUsageDescription">
+        <string>We use your contacts to find any friends that are inactive members of OurAlum.com so you can invite them to join.</string>
+    </edit-config>
+    <preference name="StatusBarBackgroundColor" value="#0984c4" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="android-minSdkVersion" value="14" />
     <preference name="StatusBarOverlaysWebView" value="false" />
-    <preference name="StatusBarBackgroundColor" value="#ee6e73" />
     <preference name="StatusBarStyle" value="blacktranslucent" />
     <preference name="SplashScreen" value="screen" />
+    <preference name="permissions" value="none" />
 </widget>

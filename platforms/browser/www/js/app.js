@@ -210,6 +210,13 @@ function onError(contactError) {
 	alert('onError!');
 }
 
+$(document).on('click', '#dlink', function() {
+	//Show dialog
+	//$("#access-contacts-dialog").dialog();
+	showModal('access-contacts-dialog');
+})
+
+
 $(document).on('click', '#sendInviteList', function() {
 	var formData = $('#clistFrm').serializeArray();
 	var user_id = getStorage('oa_user_id');
@@ -1079,7 +1086,7 @@ $(document).on('click', '.submitInvite', function () {
 	});
 	 
 	request.done(function( data ) {
-		alert(data);
+		//alert(data);
 		obj = $.parseJSON( data );
 		if(obj.code === 1) {
 			//
@@ -1376,7 +1383,7 @@ $(document).on('click', '.sendAlumContact', function () {
 		dataType: "html"
 	});
 	request.done(function( data ) {
-		alert(data );
+		//alert(data );
 		var obj = $.parseJSON( data );
 		if(obj.msg === 'success') {
 			$('#alum-contact-frm').prepend('<div class="alert alert-success">Your message has been sent!</div>');
@@ -1405,7 +1412,7 @@ function setUserToken(oa_user_id, token) {
 	});
 	 
 	request.done(function( data ) {
-		alert(data);
+		//alert(data);
 		obj = $.parseJSON( data );
 		if(obj.code === 1) {
 			//
@@ -1419,12 +1426,12 @@ function setUserToken(oa_user_id, token) {
 
 function showModal(id) {
 	$('#' + id).show();
-	$('body').append('<div class="page-overlay"></div>');
+	//$('body').append('<div class="page-overlay"></div>');
 }
 
 function hideModal(id) {
 	$('#' + id).hide();
-	$('.page-overlay').remove();
+	//$('.page-overlay').remove();
 }
 
 function setStorage(name, value){ 

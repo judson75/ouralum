@@ -243,10 +243,14 @@ textarea {
 
 .btn-sm {
 	font-size: 12px;
-	border-radius: 4px;
     -webkit-border-radius: 4px;
+	border-radius: 4px;
 	padding: 6px;
 	width: auto;
+}
+
+.btn-secondary {
+	background: #0f9fd3;
 }
 
 .page-overlay {
