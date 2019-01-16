@@ -94,12 +94,14 @@ var app = {
        });
     },
 	onBackKeyDown: function(e) {
-		alert($.mobile.activePage[0].id );
+		//alert($.mobile.activePage[0].id );
 		if ($.mobile.activePage[0].id == "home"
             || $.mobile.activePage[0].id == "invite-members") {
             e.preventDefault();
             //navigator.app.exitApp();
-			$.mobile.changePage( "index.html", { transition: "slide", changeHash: false, reverse: true });
+			if($.mobile.activePage[0].id != "home") {
+				$.mobile.changePage( "index.html", { transition: "slide", changeHash: false, reverse: true });
+			}
         }
 		/*
 		else if($.mobile.activePage[0].id == "inspection"){
@@ -1437,6 +1439,65 @@ $(document).on('click', '.sendAlumContact', function () {
 		$.mobile.loading( "hide" );
 	});
 });
+
+$(document).on('click', '.SubmitSearchBtn', function () {
+	$.mobile.loading( "show", { theme: "a", text: "Searching", textVisible: true} );
+	var search_term = $('input[name="search_term"]').val();
+	if(search_term == '') {
+		return false;
+	}
+	var request = $.ajax({
+		url: serviceURL + 'search_site',
+		method: "GET",
+		data: { search_term: search_term },
+		dataType: "html"
+	});
+	request.done(function( data ) {
+		//alert(data );
+		var obj = $.parseJSON( data );
+		if(obj.msg === 'success') {
+			var html = '';
+			if(obj.data != undefined) {
+				html += '<h3>Search Results</h3>';
+				html += '<ul>';
+				$.each( obj.data, function( key, data ) {
+					var link = '';
+					var meta = '';
+					if(data.type == 'member') {
+						link = 'member.html?id=' + data.id;
+						meta = 'Member Profile';
+					}
+					else {
+						link = 'alumn.html?id=' + data.id;
+						meta = 'Alum Group';
+					} 
+					
+					html += '<li>';
+					html += '<a href="' + link + '" data-role="none" data-transition="slide">';
+					html += '<span class="sr-img">' + data.img + '</span>';
+					html += '<span class="sr-body">';
+					html += '<span class="sr-title">' + data.title + '</span>';
+					html += '<span class="sr-meta">' + meta + '</span>';
+					html += '</span>';
+					html += '</a>';
+					html += '</li>';
+				});
+				html += '</ul>';
+			}
+			else {
+				
+			}
+			$('#search_results_preview').html(html);
+			$.mobile.loading( "hide" );
+		}
+		else {
+
+		}
+
+		$.mobile.loading( "hide" );
+	});
+});
+
 
 function setUserToken(oa_user_id, token) {
 	//alert("USER: " + oa_user_id + " - TOKEN: " + token);
