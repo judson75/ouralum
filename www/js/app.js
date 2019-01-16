@@ -11,15 +11,17 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+		document.addEventListener("backbutton", this.onBackKeyDown, false);
     },
     // deviceready Event Handler
     //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        console.log('Received Device Ready Event');
-        console.log('calling setup push');
+       // console.log('Received Device Ready Event');
+       // console.log('calling setup push');
         app.setupPush();
+		//app.onBackKeyDown();
         //Check Login
         var oa_user_id = getStorage('oa_user_id');
        // alert("USER1: " + oa_user_id);        
@@ -90,14 +92,41 @@ var app = {
                 'Ok'                  // buttonName
             );
        });
-    }
+    },
+	onBackKeyDown: function(e) {
+		alert($.mobile.activePage[0].id );
+		if ($.mobile.activePage[0].id == "home"
+            || $.mobile.activePage[0].id == "invite-members") {
+            e.preventDefault();
+            //navigator.app.exitApp();
+			$.mobile.changePage( "index.html", { transition: "slide", changeHash: false, reverse: true });
+        }
+		/*
+		else if($.mobile.activePage[0].id == "inspection"){
+            //e.preventDefault();
+            //back();
+            //return false;
+			alert("other");
+        }
+		else if($.mobile.activePage[0].id == "noDetails"){
+            //e.preventDefault();
+            //$.mobile.changePage("home.html");
+            //return false;
+			alert("other2");
+        }
+		*/
+		else {
+			//alert("other3");
+           navigator.app.backHistory();
+        }
+	}
 };
 
 function onContactSuccess(contacts) {
 	//Must ajax back to site to compare contacts
 	var user_id = getStorage('oa_user_id');
 	//alert(user_id);
-	$.mobile.loading( "show", { theme: "a", text: "Fetching your contacts list", textVisible: true} );
+	$.mobile.loading( "show", { theme: "a", text: "Fetching your contacts list. Please be patient.", textVisible: true} );
 	//alert(contacts);
 	var c = JSON.stringify(contacts);
 	//{ user_id : user_id, contacts: JSON.stringify(contacts) }
@@ -213,9 +242,16 @@ function onError(contactError) {
 $(document).on('click', '#dlink', function() {
 	//Show dialog
 	//$("#access-contacts-dialog").dialog();
-	showModal('access-contacts-dialog');
-})
-
+	var cperm = getStorage('oa_contact_perms');
+	//alert(cperm);
+	if(cperm == 1) {
+		$.mobile.changePage( "invite-members.html", { transition: "slide", changeHash: false });
+	}
+	else {
+		showModal('access-contacts-dialog');
+	}
+	
+});
 
 $(document).on('click', '#sendInviteList', function() {
 	var formData = $('#clistFrm').serializeArray();
@@ -1643,6 +1679,10 @@ function getmemberCountHome() {
 			
 		}
 	});
+}
+
+function setContactPerm(v) {
+	setStorage('oa_contact_perms', v);
 }
 
 function orientation(img, canvas) {
