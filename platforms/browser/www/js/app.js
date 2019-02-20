@@ -995,7 +995,7 @@ $(document).on('click', '[data-role="close"]', function () {
 	hideModal($(this).parent('div').parent('div').attr('id'));
 });
 
-$(document).on('click', '.uploadPhotoBtn', function () {
+$(document).on('click touchstart', '.uploadPhotoBtn', function () {
 	var group_id = $(this).data('id');
 	var group_name = $(this).data('name');
 	var user_id = $(this).data('user');
@@ -1015,7 +1015,7 @@ $(document).on('click', '.uploadPhotoBtn', function () {
 	showModal('photo-upload');
 });
 
-$(document).on('click', '.sendInviteBtn', function () {
+$(document).on('click touchstart', '.sendInviteBtn', function () {
 
 	var member_id = $(this).data('id');
 	var member_name = $(this).data('name');
