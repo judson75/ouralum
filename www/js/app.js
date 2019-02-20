@@ -1534,6 +1534,7 @@ function onError(contactError) {
 		alert(id);
 		setTimeout(function(){
 			$('#' + id).show();
+			$('#' + id).css('display', 'block');
 		}, 200);
 		
 		//$('body').append('<div class="page-overlay"></div>');
