@@ -983,19 +983,20 @@ $(document).on( "pagecreate", "#photos-page", function(event) {
 	});
 });
 
-$(document).on('click', '#inviteMembersBtn', function () {
+$(document).on('click touchstart', '#inviteMembersBtn', function () {
 	showModal('invite-members');
 });
 
-$(document).on('click', '.alert .closebtn', function () {
+$(document).on('click touchstart', '.alert .closebtn', function () {
 	$(this).parent('div').remove();
 });
 
-$(document).on('click', '[data-role="close"]', function () {
+$(document).on('click touchstart', '[data-role="close"]', function () {
 	hideModal($(this).parent('div').parent('div').attr('id'));
 });
 
 $(document).on('click touchstart', '.uploadPhotoBtn', function () {
+	alert("T");
 	var group_id = $(this).data('id');
 	var group_name = $(this).data('name');
 	var user_id = $(this).data('user');
@@ -1030,7 +1031,7 @@ $(document).on('click touchstart', '.sendInviteBtn', function () {
 	showModal('invite-member');
 });
 
-$(document).on('click', '.submitPhoto', function () {
+$(document).on('click touchstart', '.submitPhoto', function () {
 	//Ajax...
 	//$.mobile.loading( "show" );
 	$('div').removeClass('hasError');
@@ -1102,7 +1103,7 @@ $(document).on('click', '.submitPhoto', function () {
 	
 });
 
-$(document).on('click', '.selectPhotoBtn', function () {
+$(document).on('click touchstart', '.selectPhotoBtn', function () {
 	$('input[name="photo"]').click();
 });
 
@@ -1113,7 +1114,7 @@ $(document).on('change', 'input[name="photo"]', function () {
 	$('input[name="photo"]').parent().removeClass('hasError');
 });
 
-$(document).on('click', '.submitInvite', function () {
+$(document).on('click touchstart', '.submitInvite', function () {
 	//$.mobile.loading( "show" );
 	$.mobile.loading( "show", { theme: "a", text: "Sending Invitation", textVisible: true} );
 	var member_id = $('#invite-member-frm input["member_id"]').val();
