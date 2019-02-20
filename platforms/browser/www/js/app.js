@@ -996,7 +996,6 @@ $(document).on('click touchstart', '[data-role="close"]', function () {
 });
 
 $(document).on('click touchstart', '.uploadPhotoBtn', function () {
-	alert("T");
 	var group_id = $(this).data('id');
 	var group_name = $(this).data('name');
 	var user_id = $(this).data('user');
@@ -1529,6 +1528,7 @@ function setUserToken(oa_user_id, token) {
 }
 
 function showModal(id) {
+	alert(id);
 	$('#' + id).show();
 	//$('body').append('<div class="page-overlay"></div>');
 }
