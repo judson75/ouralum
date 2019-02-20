@@ -241,7 +241,7 @@ function onError(contactError) {
 	alert('onError!');
 }
 
-$(function(){
+
 	$(document).on('click', '#dlink', function() {
 		//Show dialog
 		//$("#access-contacts-dialog").dialog();
@@ -373,7 +373,7 @@ $(function(){
 					html += '<li id="li-' + value.group_id + '">';
 					html += '<span class="alumn-logo">';
 					if(value.group_logo !== '' && value.group_logo !== null) {
-						html += '<img src="https://ouralum.com/images/alum_group_images/' + value.group_logo + '">';
+						html += '<a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide"><img src="https://ouralum.com/images/alum_group_images/' + value.group_logo + '"></a>';
 					}
 					else {
 						//get initials from name
@@ -383,7 +383,7 @@ $(function(){
 						for (i = 0; i < words.length; i++) {
 							init += words[i].charAt(0);
 						}
-						html += '<span class="alumn-init">' + init + '</span>';
+						html += '<a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide"><span class="alumn-init">' + init + '</span></a>';
 						
 					}
 					html += '</span>';
@@ -1820,4 +1820,3 @@ $(function(){
 		ctx.drawImage(img, 0, 0, width, height);
 		
 	}
-});
