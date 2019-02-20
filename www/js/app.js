@@ -1531,7 +1531,7 @@ function onError(contactError) {
 	}
 	
 	function showModal(id) {
-		//alert(id);
+		alert(id);
 		setTimeout(function(){
 			$('#' + id).show();
 		}, 200);
