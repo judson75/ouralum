@@ -728,8 +728,13 @@ $(document).on( "pageshow", "#member-page", function(event) {
 			if(obj.data.address !== null && obj.data.address !== undefined) {
 				html += obj.data.address + '<br>';
 			}
-			html += obj.data.city + ', ' + obj.data.state + ' ' + obj.data.zipcode;
-			html += '</div>';
+			if(obj.data.city !== null && obj.data.city !== undefined &&
+				obj.data.state !== null && obj.data.state !== undefined &&
+				obj.data.zipcode !== null && obj.data.zipcode !== undefined
+			) {
+				html += obj.data.city + ', ' + obj.data.state + ' ' + obj.data.zipcode;
+				html += '</div>';
+			}
 			
 			if(obj.data.phone !== null && obj.data.phone !== undefined) {
 				html += '<div class="member-phone">' + obj.data.phone + '</div>';
@@ -1011,12 +1016,13 @@ $(document).on('click', '.uploadPhotoBtn', function () {
 });
 
 $(document).on('click', '.sendInviteBtn', function () {
+
 	var member_id = $(this).data('id');
 	var member_name = $(this).data('name');
 	var user_id = $(this).data('user');
 	var group_id = $(this).data('group');
 	//show modal....
-	
+
 	$('#invite-member-frm input[name="group_id"]').val(group_id);
 	$('#invite-member-frm input[name="member_id"]').val(member_id);
 	$('#invite-member-frm input[name="user_id"]').val(user_id);
@@ -1712,7 +1718,7 @@ function buildMembersTable(id, user_id, member) {
 	}
 	td += '</div>';
 	td += '<div class="member-table-location">' + location + '</div>';
-	td += '<div class="member-table-init">Initiation Date: ' + member.init_date_format + '</div></div></td>';
+	td += '<div class="member-table-init">Init. Date: ' + member.init_date_format + '</div></div></td>';
 	td += '<td nowrap>' + claimed_profile + '</td></tr>';
 	return td;
 }
