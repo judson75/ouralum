@@ -502,7 +502,7 @@ function onError(contactError) {
 						html += '<h5 class="no-results">No Photos</h5>';
 					}
 					//Upload photo button
-					html += '<a href="javascript:Void(0);" class="btn uploadPhotoBtn" data-id="' + id + '" data-user="' + user_id + '" data-name="' + obj.data.group_name + '">Upload Photo</a>';
+					html += '<a href="javascript:void(0);" class="btn uploadPhotoBtn" data-id="' + id + '" data-user="' + user_id + '" data-name="' + obj.data.group_name + '">Upload Photo</a>';
 					html += '</div>';
 				
 				
@@ -1718,7 +1718,7 @@ function onError(contactError) {
 	function buildMembersTable(id, user_id, member) {
 		var td = '';
 		var location = (member.city !== '' && member.city !== null) ? member.city + ', ' + member.state : '';
-		var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<a href="javascript:Void(0);" class="btn btn-sm sendInviteBtn" data-id="' + member.id + '" data-user="' + user_id + '" data-group="' + id + '" data-name="' + member.first_name + ' ' + member.last_name +'" style="margin-top: 12px;">Send Invite</a>';
+		var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<a href="javascript:void(0);" class="btn btn-sm sendInviteBtn" data-id="' + member.id + '" data-user="' + user_id + '" data-group="' + id + '" data-name="' + member.first_name + ' ' + member.last_name +'" style="margin-top: 12px;">Send Invite</a>';
 		td += '<tr><td nowrap><a href="member.html?id=' + member.id + '" data-role="none" data-transition="slide">';
 		if(member.avatar !== '' && member.avatar !== undefined && member.avatar !== null) {
 			td += '<div class="member-table-avatar">' + member.avatar + '</div>';
