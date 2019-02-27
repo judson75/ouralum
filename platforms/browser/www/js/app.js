@@ -502,7 +502,8 @@ function onError(contactError) {
 						html += '<h5 class="no-results">No Photos</h5>';
 					}
 					//Upload photo button
-					html += '<a href="javascript:void(0);" class="btn uploadPhotoBtn" data-id="' + id + '" data-user="' + user_id + '" data-name="' + obj.data.group_name + '">Upload Photo</a>';
+					html += '<a href="upload-photo.html?id=' + id + '&user=' + user_id + '&name=' + obj.data.group_name + '" class="btn" data-role="none" data-transition="pop">Upload Photo</a>';
+					//html += '<a href="javascript:void(0);" class="btn uploadPhotoBtn" data-id="' + id + '" data-user="' + user_id + '" data-name="' + obj.data.group_name + '">Upload Photo</a>';
 					html += '</div>';
 				
 				
@@ -984,7 +985,44 @@ function onError(contactError) {
 		});
 	});
 	
+	$(document).on( "pageshow", "#upload-photo-page", function(event) {
+	//	$.mobile.loading( "show", { theme: "a", text: "Loading Member Profile", textVisible: true} );
+		var id = getUrlParameter('id');
+		var user = getUrlParameter('user');
+		var name = getUrlParameter('name');
+		
+		$('#upload-photo-frm input[name="group_id"]').val(id);
+		$('#upload-photo-frm input[name="user_id"]').val(user);
+		
+		var y = (new Date()).getFullYear();
+		var min_year = parseInt(y) - 100;
+		for (var i = y; i >= min_year; i--){
+			$('select[name="photo_year"]').append(
+	        $('<option></option>').val(i).html(i));
+		}
+		//header....
+		$('#upload-photo-page h2').html('Upload Photo to ' + group_name);
+	});
 	
+	$(document).on( "pageshow", "#send-invite-page", function(event) {
+	//	$.mobile.loading( "show", { theme: "a", text: "Loading Member Profile", textVisible: true} );
+		var id = getUrlParameter('id');
+		var user = getUrlParameter('user');
+		var group = getUrlParameter('group');
+		var name = getUrlParameter('name');
+		var member_name = getUrlParameter('name');
+		var email = getUrlParameter('email');
+		var phone = getUrlParameter('phone');
+		//id=' + member.id + '&user="' + user_id + '&group=' + id + '&name=' + member.first_name + ' ' + member.last_name +'
+		$('#invite-member-frm input[name="group_id"]').val(group);
+		$('#invite-member-frm input[name="member_id"]').val(id);
+		$('#invite-member-frm input[name="user_id"]').val(user);
+		$('#invite-member-frm input[name="email_address"]').val(email);
+		$('#invite-member-frm input[name="phone"]').val(phone);
+		$("#invite-welcome").html('Use the form below to send an invitation to ' + member_name);
+	});
+	
+	/*
 	$(document).on('click touchstart', '#inviteMembersBtn', function () {
 		showModal('invite-members');
 	});
@@ -1017,7 +1055,8 @@ function onError(contactError) {
 		//show modal....
 		showModal('photo-upload');
 	});
-	
+	*/
+	/*
 	$(document).on('click touchstart', '.sendInviteBtn', function () {
 	
 		var member_id = $(this).data('id');
@@ -1032,13 +1071,14 @@ function onError(contactError) {
 		$("#invite-welcome").html('Use the form below to send an invitation to ' + member_name); 
 		showModal('invite-member');
 	});
+	*/
 	
 	$(document).on('click touchstart', '.submitPhoto', function () {
 		//Ajax...
 		//$.mobile.loading( "show" );
 		$('div').removeClass('hasError');
 		$('.helper.error').remove();
-		$.mobile.loading( "show", { theme: "a", text: "Submitting Photo", textVisible: true} );
+		
 		var form = document.getElementById('upload-photo-frm');
 		formData = new FormData(form);
 		//Validation
@@ -1060,9 +1100,10 @@ function onError(contactError) {
 		}
 		if(err_count > 0) {
 			//$('#upload-photo-frm').prepend('<div class="alert alert-error">Please fix errors and resubmit</div>');
-			$.mobile.loading( "hide" );
+			//$.mobile.loading( "hide" );
 			return false;
 		}
+		$.mobile.loading( "show", { theme: "a", text: "Submitting Photo", textVisible: true} );
 		var request = $.ajax({
 			url: serviceURL + 'submit_photo',
 		  	method: "POST",
@@ -1084,7 +1125,8 @@ function onError(contactError) {
 				$('#photoPreview').attr('src', '');
 				$('#upload-photo-frm input[name="photo"]').val('');
 				//hide overlay....
-				hideModal('photo-upload');
+//hideModal('photo-upload');
+				$.mobile.changePage('alumn.html', { transition: "slide", changeHash: false, reverse: true } );
 				//Alert popup
 				$('body').prepend('<div class="alert-popup alert-info">Your photo has been submitted!</div>');
 				setTimeout(function(){
@@ -1093,9 +1135,9 @@ function onError(contactError) {
 			}
 			else {
 				//show error
-				$('#login-form').prepend('<div class="alert alert-error"><span class="closebtn"><i class="fa fa-close"></i></span>' + obj.data + '</div>');
+				$('#upload-photo-frm').prepend('<div class="alert alert-error"><span class="closebtn"><i class="fa fa-close"></i></span>' + obj.data + '</div>');
 			}
-			$.mobile.loading( "hide" );
+			//$.mobile.loading( "hide" );
 		});
 		 
 		request.fail(function( jqXHR, textStatus, errorThrown ) {
@@ -1118,12 +1160,32 @@ function onError(contactError) {
 	
 	$(document).on('click touchstart', '.submitInvite', function () {
 		//$.mobile.loading( "show" );
+		//alert("G");
+		$('div').removeClass('hasError');
+		$('.helper.error').remove();
+		$('#form-error').remove();
+		var member_id = $('#invite-member-frm input[name="member_id"]').val();
+		var user_id = $('#invite-member-frm input[name="user_id"]').val();
+		var group_id = $('#invite-member-frm input[name="group_id"]').val();
+		var email_address = $('#invite-member-frm input[name="email_address"]').val();
+		var phone = $('#invite-member-frm input[name="phone"]').val();
+		var err_count = 0;
+		if($('#invite-member-frm input[name="email_address"]').val() === '') {
+			$('#invite-member-frm input[name="email_address"]').parent().addClass('hasError');
+			$('#invite-member-frm input[name="email_address"]').after('<div class="helper error">Please enter an email address</div>');
+			err_count++;
+		}
+		if($('#invite-member-frm input[name="phone"]').val() === '') {
+			$('#invite-member-frm input[name="phone"]').parent().addClass('hasError');
+			$('#invite-member-frm input[name="phone"]').after('<div class="helper error">Please enter a phone number</div>');
+			err_count++;
+		}
+		if(err_count > 0) {
+			$('#invite-member-frm').prepend('<div id="form-error" class="alert alert-error">Please fix errors and resubmit</div>');
+			//$.mobile.loading( "hide" );
+			return false;
+		}
 		$.mobile.loading( "show", { theme: "a", text: "Sending Invitation", textVisible: true} );
-		var member_id = $('#invite-member-frm input["member_id"]').val();
-		var user_id = $('#invite-member-frm input["user_id"]').val();
-		var group_id = $('#invite-member-frm input["group_id"]').val();
-		var email_address = $('#invite-member-frm input["email_address"]').val();
-		var phone = $('#invite-member-frm input["phone"]').val();
 		//Ajax...
 		var request = $.ajax({
 			url: serviceURL + 'member_invite',
@@ -1142,14 +1204,14 @@ function onError(contactError) {
 				var group_id = $('#invite-member-frm input["group_id"]').val();
 				var email_address = $('#invite-member-frm input["email_address"]').val();
 				var phone = $('#invite-member-frm input["phone"]').val();
-				hideModal('invite-member');
-	
+			//	hideModal('invite-member');
+				$.mobile.changePage('alumn.html', { transition: "slide", changeHash: false, reverse: true } );
 			}
 			else {
 				//show error
 				
 			}
-			$.mobile.loading( "hide" );
+			$.mobile.changePage('alumn.html', { transition: "slide", changeHash: false, reverse: true } );
 		});
 		
 	});
@@ -1687,6 +1749,8 @@ function onError(contactError) {
 	
 	function readURLPhoto(input) {
 		//console.log(input);
+		//alert(input);
+		$.mobile.loading( "show", { theme: "a", text: "Please Wait", textVisible: true} );
 		if (input.files && input.files[0]) {
 			var reader = new FileReader();
 			reader.onloadend = function (e) {
@@ -1695,7 +1759,7 @@ function onError(contactError) {
 				$('input[name="photo_data"]').val(data);
 				//console.log(e.target.result);
 				$('#photoPreview').attr('src', e.target.result);
-				
+				//alert(e.target.result);				
 				EXIF.getData(input.files[0], function() {
 					var allMetaData = EXIF.getAllTags(this);
 					exifOrientation = allMetaData.Orientation;
@@ -1709,8 +1773,9 @@ function onError(contactError) {
 					// run orientation on img in canvas
 					orientation(img, canvas);
 				});
+				$.mobile.loading( "hide" );
 			};
-	
+			
 			reader.readAsDataURL(input.files[0]);
 		}
 	}
@@ -1718,7 +1783,11 @@ function onError(contactError) {
 	function buildMembersTable(id, user_id, member) {
 		var td = '';
 		var location = (member.city !== '' && member.city !== null) ? member.city + ', ' + member.state : '';
-		var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<a href="javascript:void(0);" class="btn btn-sm sendInviteBtn" data-id="' + member.id + '" data-user="' + user_id + '" data-group="' + id + '" data-name="' + member.first_name + ' ' + member.last_name +'" style="margin-top: 12px;">Send Invite</a>';
+		//alert("ID: " + id + " - USER: " + user_id);
+		//alert(JSON.stringify(member));
+		//exit;
+		//var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<a href="javascript:void(0);" class="btn btn-sm sendInviteBtn" data-id="' + member.id + '" data-user="' + user_id + '" data-group="' + id + '" data-name="' + member.first_name + ' ' + member.last_name +'" style="margin-top: 12px;">Send Invite</a>';
+		var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<a href="send-invite.html?id=' + member.id + '&user=' + user_id + '&group=' + id + '&name=' + member.first_name + ' ' + member.last_name +'&email=' + member.email + '&phone=' + member.phone + '" class="btn btn-sm" style="margin-top: 12px;" data-transition="pop">Send Invite</a>';
 		td += '<tr><td nowrap><a href="member.html?id=' + member.id + '" data-role="none" data-transition="slide">';
 		if(member.avatar !== '' && member.avatar !== undefined && member.avatar !== null) {
 			td += '<div class="member-table-avatar">' + member.avatar + '</div>';

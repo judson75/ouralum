@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <title>Our Alum - Member</title>
+</head>
+
+<body>
+	<div data-role="page" id="send-invite-page">
+		<div data-role="header">
+			<h2>Send Invite</h2>
+			<div class="closePage"><a href="#" data-rel="back" data-transition="slide" data-direction="reverse"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+		</div>
+		<div data-role="content">
+			<p id="invite-welcome">Use the form below to send an invitation to a friend.</p>
+			<form id="invite-member-frm">
+				<input type="hidden" name="group_id" value="">
+				<input type="hidden" name="member_id" value="">
+				<input type="hidden" name="user_id" value="">
+				<div class="form-group">
+					<label>Email Address:</label> <input type="text" name="email_address" data-role="none">
+				</div>
+				<div class="form-group">
+					<label>Phone:</label> <input type="text" name="phone" data-role="none">
+				</div>
+				<div style="margin-top: 20px;">
+					<button type="button" class="btn submitInvite" data-role="none">Send Invite</button>
+				</div>
+			</form>
+		</div>
+	</div>
+   
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+    </script>
+</body>
+</html>
