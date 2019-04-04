@@ -14,9 +14,9 @@
 </head>
 
 <body>
-	<div data-role="page" id="send-invite-page">
+	<div data-role="page" id="upload-photo-page">
 		<div data-role="header">
-			<h2>Send Invite</h2>
+			<h2>Upload Photo</h2>
 			<div class="closePage"><a href="javascript:void(0);" onclick="window.history.back();" data-transition="slideup"><i class="fa fa-times" aria-hidden="true"></i></a></div>
 		</div>
 		<div data-role="content">
@@ -26,6 +26,7 @@
 				<input type="hidden" name="photo_data" value="">
 				<input type="hidden" name="exif_data" value="">
 				<input type="hidden" name="orientation" value="">
+				
 				<div class="form-group">
 					<label>Photo Year:</label>
 					<select name="photo_year" data-role="none">
@@ -36,7 +37,7 @@
 					<label>Caption:</label> <input type="text" name="photo_caption" data-role="none">
 				</div>
 				<div class="form-group">
-					<input type="file" name="photo" style="display: none;" accept="image/*" data-role="none">
+					<input type="file" name="photo" style="display: none;" accept="image/*;capture=camera" data-role="none">
 					<img id="photoPreview" class="img-responsive" crossorigin="anonymous" src="" style="display: none;">
 					<canvas id="photoCanvas" style="height: 0px;"></canvas>
 					<button type="button" class="selectPhotoBtn"><i class="fa fa-mouse-pointer" aria-hidden="true"></i>Choose Photo</button>
@@ -53,6 +54,7 @@
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript" src="js/exif.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript">
         app.initialize();

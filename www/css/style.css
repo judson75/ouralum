@@ -1328,5 +1328,12 @@ h3.timeline-title {
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
+	
+	#upload-photo-page div[data-role='header'] h2 {
+		width: 300px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
 }

@@ -95,12 +95,10 @@ var app = {
     },
 	onBackKeyDown: function(e) {
 		//alert($.mobile.activePage[0].id );
-		if ($.mobile.activePage[0].id == "home"
-            || $.mobile.activePage[0].id == "invite-members"
-		    || $.mobile.activePage[0].id == "alumns-page") {
+		if ($.mobile.activePage[0].id == "home" || $.mobile.activePage[0].id == "invite-members" || $.mobile.activePage[0].id == "alumns-page") {
             e.preventDefault();
             //navigator.app.exitApp();
-			if($.mobile.activePage[0].id != "home") {
+			if($.mobile.activePage[0].id !== "home") {
 				$.mobile.changePage( "index.html", { transition: "slide", changeHash: false, reverse: true });
 			}
         }
@@ -1017,10 +1015,11 @@ function onError(contactError) {
 	//	$.mobile.loading( "show", { theme: "a", text: "Loading Member Profile", textVisible: true} );
 		var id = getUrlParameter('id');
 		var user = getUrlParameter('user');
-		var name = getUrlParameter('name');
+		var group_name = getUrlParameter('name');
 		
 		$('#upload-photo-frm input[name="group_id"]').val(id);
 		$('#upload-photo-frm input[name="user_id"]').val(user);
+		
 		
 		var y = (new Date()).getFullYear();
 		var min_year = parseInt(y) - 100;
@@ -1028,8 +1027,13 @@ function onError(contactError) {
 			$('select[name="photo_year"]').append(
 	        $('<option></option>').val(i).html(i));
 		}
+		
 		//header....
-		$('#upload-photo-page h2').html('Upload Photo to ' + group_name);
+		if(group_name !== '' && group_name !== null && group_name !== undefined) {
+			$('#upload-photo-page h2').html('Upload Photo to ' + group_name);
+		}
+
+		
 	});
 	
 	$(document).on( "pageshow", "#send-invite-page", function(event) {
