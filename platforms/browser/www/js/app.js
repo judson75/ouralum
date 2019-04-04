@@ -96,7 +96,8 @@ var app = {
 	onBackKeyDown: function(e) {
 		//alert($.mobile.activePage[0].id );
 		if ($.mobile.activePage[0].id == "home"
-            || $.mobile.activePage[0].id == "invite-members") {
+            || $.mobile.activePage[0].id == "invite-members"
+		    || $.mobile.activePage[0].id == "alumns-page") {
             e.preventDefault();
             //navigator.app.exitApp();
 			if($.mobile.activePage[0].id != "home") {
