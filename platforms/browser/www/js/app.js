@@ -355,6 +355,7 @@ function onError(contactError) {
 		//$.mobile.loading( "show" );
 		$.mobile.loading( "show", { theme: "a", text: "Loading", textVisible: true} );
 		var user_id = getStorage('oa_user_id');
+		deleteStorage('oa_init_year');
 		var request = $.ajax({
 			url: serviceURL + 'alumns',
 		  	method: "GET",
@@ -421,9 +422,30 @@ function onError(contactError) {
 		//$('#alumn').html('');
 		var id = getUrlParameter('id');
 		var user_id = getStorage('oa_user_id');
+		//get and set users alum year...
+		var user_data = getUserData(user_id);
+		var init_year = '';
+		//alert("DATA: " + user_data.data);
+		if(user_data != '' && user_data != undefined) {
+			//alert("DAT2: " + user_data.data.initiation_year);
+			var initiation_year = user_data.data.initiation_year;
+			//alert("INIT YEAR: " + initiation_year);
+			//set it...
+			init_year = getStorage('oa_init_year');
+			//alert("INIT YEAR: " + init_year);
+			if(init_year == '' || init_year == null || init_year == undefined || init_year == false) {
+				setStorage('oa_init_year', initiation_year);
+				init_year = getStorage('oa_init_year');
+			}
+		}
+		//alert("UD: " + user_data);
 		//alert("SHOW ID: " + id);
+		var url = serviceURL + 'alumn';
+		if(init_year != '' && init_year != null && init_year != undefined && init_year != false) {
+			url += '?init_year=' + init_year;
+		}
 		var request = $.ajax({
-			url: serviceURL + 'alumn',
+			url: url,
 		  	method: "GET",
 		  	data: { id : id },
 		  	dataType: "html"
@@ -502,7 +524,7 @@ function onError(contactError) {
 						html += '<h5 class="no-results">No Photos</h5>';
 					}
 					//Upload photo button
-					html += '<a href="upload-photo.html?id=' + id + '&user=' + user_id + '&name=' + obj.data.group_name + '" class="btn" data-role="none" data-transition="pop">Upload Photo</a>';
+					html += '<a href="upload-photo.html?id=' + id + '&user=' + user_id + '&name=' + obj.data.group_name + '" class="btn" data-role="none" data-transition="slidedown">Upload Photo</a>';
 					//html += '<a href="javascript:void(0);" class="btn uploadPhotoBtn" data-id="' + id + '" data-user="' + user_id + '" data-name="' + obj.data.group_name + '">Upload Photo</a>';
 					html += '</div>';
 				
@@ -520,9 +542,14 @@ function onError(contactError) {
 					html += '<select id="member_tableFilter_init" name="init_year">';
 					html += '<option value="">Choose Year</option>';
 					var y = (new Date()).getFullYear();
+					//alert(init_year);
 					var min_year = parseInt(y) - 100;
 					for (var i = y; i >= min_year; i--){
-						html += '<option value="' + i + '">' + i + '</option>';
+						html += '<option value="' + i + '"';
+						if(i == init_year) {
+							html += ' selected';	
+						}
+						html += '>' + i + '</option>';
 					}
 					html += '</select>';
 					html += '</div>';
@@ -1233,6 +1260,7 @@ function onError(contactError) {
 		var user_id = getStorage('oa_user_id');
 		var id = getUrlParameter('id');
 		var init_year = $(this).val();
+		setStorage('oa_init_year', init_year);
 		var search_str = $('input[name="member-search"]').val();
 		//alert(id);
 		var request = $.ajax({
@@ -1592,6 +1620,31 @@ function onError(contactError) {
 		});
 	}
 	
+	function getUserData(oa_user_id, token) {
+		//alert("USER: " + oa_user_id + " - TOKEN: " + token);
+		var obj = '';
+		var request = $.ajax({
+			url: serviceURL + 'user',
+		  	method: "GET",
+		  	data: { user_id : oa_user_id , token: token },
+		  	dataType: "html",
+		  	async: false
+		});
+		request.done(function( data ) {
+			//alert("GetUser Data: " + data);
+			obj = $.parseJSON( data );
+			if(obj.code === 1) {
+				//
+			}
+			else {
+				//show error
+				
+			}
+		});
+		return obj;
+	}
+
+	
 	function showModal(id) {
 		alert(id);
 		setTimeout(function(){
@@ -1787,7 +1840,7 @@ function onError(contactError) {
 		//alert(JSON.stringify(member));
 		//exit;
 		//var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<a href="javascript:void(0);" class="btn btn-sm sendInviteBtn" data-id="' + member.id + '" data-user="' + user_id + '" data-group="' + id + '" data-name="' + member.first_name + ' ' + member.last_name +'" style="margin-top: 12px;">Send Invite</a>';
-		var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<a href="send-invite.html?id=' + member.id + '&user=' + user_id + '&group=' + id + '&name=' + member.first_name + ' ' + member.last_name +'&email=' + member.email + '&phone=' + member.phone + '" class="btn btn-sm" style="margin-top: 12px;" data-transition="pop">Send Invite</a>';
+		var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<a href="send-invite.html?id=' + member.id + '&user=' + user_id + '&group=' + id + '&name=' + member.first_name + ' ' + member.last_name +'&email=' + member.email + '&phone=' + member.phone + '" class="btn btn-sm" style="margin-top: 12px;" data-transition="slidedown">Send Invite</a>';
 		td += '<tr><td nowrap><a href="member.html?id=' + member.id + '" data-role="none" data-transition="slide">';
 		if(member.avatar !== '' && member.avatar !== undefined && member.avatar !== null) {
 			td += '<div class="member-table-avatar">' + member.avatar + '</div>';
