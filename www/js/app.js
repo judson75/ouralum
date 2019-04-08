@@ -523,7 +523,7 @@ function onError(contactError) {
 						html += '<h5 class="no-results">No Photos</h5>';
 					}
 					//Upload photo button
-					html += '<a href="upload-photo.html?id=' + id + '&user=' + user_id + '&name=' + obj.data.group_name + '" class="btn" data-role="none" data-transition="slidedown">Upload Photo</a>';
+				//	html += '<a href="upload-photo.html?id=' + id + '&user=' + user_id + '&name=' + obj.data.group_name + '" class="btn" data-role="none" data-transition="slidedown">Upload Photo</a>';
 					//html += '<a href="javascript:void(0);" class="btn uploadPhotoBtn" data-id="' + id + '" data-user="' + user_id + '" data-name="' + obj.data.group_name + '">Upload Photo</a>';
 					html += '</div>';
 				
@@ -545,7 +545,7 @@ function onError(contactError) {
 					var min_year = parseInt(y) - 100;
 					for (var i = y; i >= min_year; i--){
 						html += '<option value="' + i + '"';
-						if(i == init_year) {
+						if(i === init_year) {
 							html += ' selected';	
 						}
 						html += '>' + i + '</option>';
