@@ -65,6 +65,8 @@ ul {
 	padding-left: 0;
 }
 
+.clr { clear: both; }
+
 .helper {}
 
 .error { color: #f44336;}
@@ -109,10 +111,20 @@ ul {
 }
 
 #header-right {
-	width: 20%;
+	width: 30px;
 	float: right;
 	display: inline-block;
+	text-align: right;
+	font-size: 30px;
+	padding: 5px 10px;
 }
+
+#menu-panel { background: #222222; color: #fff; font-size: 16px; }
+
+.menuClose { display: block; text-align: right; font-size: 24px; padding: 5px;}
+
+
+#menu-panel a { color: #fff; }
 
 /* Portrait layout (default) */
 .app {
@@ -130,6 +142,13 @@ ul {
 }
 
 .app-page {
+	width:80%;
+	padding: 10px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
+	margin: 0px 0px 0px 10%;
+	clear: both;
+}
+
+#registration {
 	width:80%;
 	padding: 10px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
 	margin: 0px 0px 0px 10%;
@@ -488,8 +507,24 @@ textarea {
     -webkit-border-radius: 0px;
 }
 
+#logoutFixed {
+	position: fixed;
+	bottom: 0px;
+	left: 0;
+	width: 100%;
+	background: #fff;
+	border-radius: 0px;
+    -webkit-border-radius: 0px;
+    display: none;
+    z-index: 990;	
+}
 
-#alum-list {}
+#logoutFixed .btn{
+	width: 90%;
+	margin: 10px auto;
+}
+
+#alum-list { padding-bottom: 35px; }
 
 #alum-list ul {
 	list-style: none;

@@ -27,7 +27,15 @@ var app = {
        // alert("USER1: " + oa_user_id);        
         if(oa_user_id !== null && oa_user_id !== false && oa_user_id !== '' && oa_user_id !== undefined) {
         	//alert("HERE THREE!");
-        	$('#home-buttons').show();
+        	//$('#home-buttons').show();
+			$('#alum-list').show();
+			getAlumnsPage(oa_user_id);
+
+			//$('#registration').html('');
+			//$('#alum-list').show();
+			//$('#logoutFixed').show();
+			//getAlumnsPage(obj.data.user_id);
+			
         }
         else {
        	 	//alert("HERE FOUR!");
@@ -35,7 +43,9 @@ var app = {
         	html = $('#login-section-template').html();
         	//alert("HTML: " + html);
         	$('#registration').html(html);
-        	$('#home-buttons').hide();
+        	//$('#home-buttons').hide();
+			$('#alum-list').hide();
+			$('#logoutFixed').hide();
         }
 		
 		//var myContact = navigator.contacts.create({"displayName": "Test User"});
@@ -305,15 +315,30 @@ function onError(contactError) {
 			//alert(data );
 			obj = $.parseJSON( data );
 			if(obj.msg === 'success') {
-				$.mobile.loading( "hide" );
+				//$.mobile.loading( "hide" );
 				//login, save user...forward to home...
 				setStorage('oa_user_id', obj.data.user_id);
 				setStorage('oa_display_name', obj.data.display_name);
 				$('#registration').html('');
-	        	$('#home-buttons').show();
+				$('#alum-list').show();
+				$('#logoutFixed').show();
+				getAlumnsPage(obj.data.user_id);
+				
+				/*
+				
+				$.mobile.changePage( "alumns.html");
+				
+				
+				
+	        	//$('#home-buttons').show();
+				//what, go to alums page
+				
+				$('#alum-list').show();
+				$('#logoutFixed').show();
 				var token = getStorage('registrationId');
 	            setUserToken(obj.data.user_id, token);
 	            $.mobile.loading( "hide" );
+				*/
 			}
 			else {
 				//show error
@@ -333,9 +358,15 @@ function onError(contactError) {
 		$.mobile.loading( "show" );
 		deleteStorage('oa_user_id');
 		var html = $('#login-section-template').html();
-		$('#registration').html(html);
-	    $('#home-buttons').hide();
-	    $.mobile.loading( "hide" );
+		//wait 2 seconds
+		setTimeout(function () {
+			$('#registration').html(html);
+			//$('#home-buttons').hide();
+			$('#alum-list').hide();
+			$('#logoutFixed').hide();
+			$.mobile.loading( "hide" );
+		}, 3000);
+		
 	
 	});
 	
@@ -350,68 +381,80 @@ function onError(contactError) {
 	});  
 	        
 	$(document).on( "pageshow", "#alumns-page", function(event) {
-		//Get Alumns
-		//$.mobile.loading( "show" );
-		$.mobile.loading( "show", { theme: "a", text: "Loading", textVisible: true} );
-		var user_id = getStorage('oa_user_id');
-		deleteStorage('oa_init_year');
-		var request = $.ajax({
-			url: serviceURL + 'alumns',
-		  	method: "GET",
-		  	data: { user_id : user_id },
-		  	dataType: "html"
-		});
-		request.done(function( data ) {
-			//alert(data );
-			var obj = $.parseJSON( data );
-			if(obj.msg === 'success') {
-				$.mobile.loading( "hide" );
-				var html = '<ul>';
-				$.each( obj.data, function( key, value ) {
-					//alert( key + ": " + value.group_id );
-					//alert(value.group_logo);
-					html += '<li id="li-' + value.group_id + '">';
-					html += '<span class="alumn-logo">';
-					if(value.group_logo !== '' && value.group_logo !== null) {
-						html += '<a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide"><img src="https://ouralum.com/images/alum_group_images/' + value.group_logo + '"></a>';
-					}
-					else {
-						//get initials from name
-						var words = value.group_name.split(" ", 3),
-							i;
-						var init = '';
-						for (i = 0; i < words.length; i++) {
-							init += words[i].charAt(0);
-						}
-						html += '<a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide"><span class="alumn-init">' + init + '</span></a>';
-						
-					}
-					html += '</span>';
-					html += '<span class="alumn-title"><a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide">' + value.group_name + '</a></span>';
-					html += '<span class="alumn-count">' + value.member_count + ' members</span>';
-					html += '</li>';
-				});
-				html += '</ul>';
-				setTimeout(function(){
-					$('#alum-list').html(html);
+		var oa_user_id = getStorage('oa_user_id');
+		if(oa_user_id !== null && oa_user_id !== false && oa_user_id !== '' && oa_user_id !== undefined) {
+			$('#alum-list').show();
+			$('#logoutFixed').show();
+			//Get Alumns
+			//$.mobile.loading( "show" );
+			$.mobile.loading( "show", { theme: "a", text: "Loading", textVisible: true} );
+			var user_id = getStorage('oa_user_id');
+			deleteStorage('oa_init_year');
+			var request = $.ajax({
+				url: serviceURL + 'alumns',
+				method: "GET",
+				data: { user_id : user_id },
+				dataType: "html"
+			});
+			request.done(function( data ) {
+				//alert(oa_user_id );
+				var obj = $.parseJSON( data );
+				//alert(obj.sql);
+				if(obj.msg === 'success') {
 					$.mobile.loading( "hide" );
-					
-				}, 200);
-	            
-			}
-			else {
-				//show error
-				alert("Alumns page error");
+					var html = '<ul>';
+					$.each( obj.data, function( key, value ) {
+						//alert( key + ": " + value.group_id );
+						//alert(value.group_logo);
+						html += '<li id="li-' + value.group_id + '">';
+						html += '<span class="alumn-logo">';
+						if(value.group_logo !== '' && value.group_logo !== null) {
+							html += '<a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide"><img src="https://ouralum.com/images/alum_group_images/' + value.group_logo + '"></a>';
+						}
+						else {
+							//get initials from name
+							var words = value.group_name.split(" ", 3),
+								i;
+							var init = '';
+							for (i = 0; i < words.length; i++) {
+								init += words[i].charAt(0);
+							}
+							html += '<a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide"><span class="alumn-init">' + init + '</span></a>';
+
+						}
+						html += '</span>';
+						html += '<span class="alumn-title"><a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide">' + value.group_name + '</a></span>';
+						html += '<span class="alumn-count">' + value.member_count + ' members</span>';
+						html += '</li>';
+					});
+					html += '</ul>';
+					setTimeout(function(){
+						$('#alum-list').html(html);
+						$.mobile.loading( "hide" );
+
+					}, 200);
+
+				}
+				else {
+					//show error
+					alert("Alumns page error");
+					$.mobile.loading( "hide" );
+				}
+
+			});
+
+			request.fail(function( jqXHR, textStatus, errorThrown ) {
+				alert( "Request failed Line 354: " + textStatus + " - " + jqXHR.responseText);
 				$.mobile.loading( "hide" );
-			}
-			
-		});
-		 
-		request.fail(function( jqXHR, textStatus, errorThrown ) {
-		  	alert( "Request failed Line 354: " + textStatus + " - " + jqXHR.responseText);
-		  	$.mobile.loading( "hide" );
-		});
-		
+			});
+		}
+		else {
+			var html = '';
+        	html = $('#login-section-template').html();
+			$('#registration').html(html);
+			$('#alum-list').hide();
+			$('#logoutFixed').hide();
+		}
 	});
 	
 	//event.preventDefault();
@@ -1949,4 +1992,67 @@ function onError(contactError) {
 		// Draw img into canvas
 		ctx.drawImage(img, 0, 0, width, height);
 		
+	}
+
+
+	function getAlumnsPage(user_id) {
+		alert("USER IN FUNCTION: " + user_id);
+
+		var request = $.ajax({
+			url: serviceURL + 'alumns',
+			method: "GET",
+			data: { user_id : user_id },
+			dataType: "html"
+		});
+		request.done(function( data ) {
+			//alert(oa_user_id );
+			var obj = $.parseJSON( data );
+			//alert(obj.sql);
+			if(obj.msg === 'success') {
+				$.mobile.loading( "hide" );
+				var html = '<ul>';
+				$.each( obj.data, function( key, value ) {
+					//alert( key + ": " + value.group_id );
+					//alert(value.group_logo);
+					html += '<li id="li-' + value.group_id + '">';
+					html += '<span class="alumn-logo">';
+					if(value.group_logo !== '' && value.group_logo !== null) {
+						html += '<a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide"><img src="https://ouralum.com/images/alum_group_images/' + value.group_logo + '"></a>';
+					}
+					else {
+						//get initials from name
+						var words = value.group_name.split(" ", 3),
+							i;
+						var init = '';
+						for (i = 0; i < words.length; i++) {
+							init += words[i].charAt(0);
+						}
+						html += '<a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide"><span class="alumn-init">' + init + '</span></a>';
+
+					}
+					html += '</span>';
+					html += '<span class="alumn-title"><a href="alumn.html?id=' + value.group_id + '" data-role="none" data-transition="slide">' + value.group_name + '</a></span>';
+					html += '<span class="alumn-count">' + value.member_count + ' members</span>';
+					html += '</li>';
+				});
+				html += '</ul>';
+				setTimeout(function(){
+					$('#alum-list').html(html);
+					$.mobile.loading( "hide" );
+
+				}, 200);
+
+			}
+			else {
+				//show error
+				alert("Alumns page error");
+				$.mobile.loading( "hide" );
+			}
+
+		});
+
+		request.fail(function( jqXHR, textStatus, errorThrown ) {
+			alert( "Request failed Line 354: " + textStatus + " - " + jqXHR.responseText);
+			$.mobile.loading( "hide" );
+		});
 	}

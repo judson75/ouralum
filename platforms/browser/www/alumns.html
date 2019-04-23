@@ -22,6 +22,8 @@
 			<div id="header-right"></div>
 		</div>
 		<div id="alum-list" class="app-page"></div>
+		<div id="registration"></div>
+		<div id="logoutFixed"><button class="btn logoutBtn" id="" data-role="none"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</button></div>
 	</div>
    
     <script type="text/javascript" src="cordova.js"></script>
@@ -31,6 +33,26 @@
     <script type="text/javascript">
         app.initialize();
     </script>
+    <script type="text/template" id="login-section-template">
+  		<div class="login-page">
+  			<form id="login-form">
+  				<div class="form-group">
+	    			<label for="user_name">Email Address:</label>
+	    			<input type="text" value="" name="user_name" id="user_name" />
+    			</div>
+    			<div class="form-group">
+	    			<label for="user_password">Password:</label>
+	    			<input type="password" value="" name="user_password" id="user_password" />
+    			</div>
+    			<div class="form-group">
+    				<button type="button" class="btn loginBtn">Login</button>
+    			</div>
+    			<div class="form-group">
+					<a href="register.html" data-role="none" data-transition="slide">Not a member? click here to register</a>
+				</div>
+    		</form>
+  		</div>
+	</script>
 </body>
 
 </html>
