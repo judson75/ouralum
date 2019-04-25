@@ -1996,7 +1996,7 @@ function onError(contactError) {
 
 
 	function getAlumnsPage(user_id) {
-		alert("USER IN FUNCTION: " + user_id);
+		//alert("USER IN FUNCTION: " + user_id);
 
 		var request = $.ajax({
 			url: serviceURL + 'alumns',
