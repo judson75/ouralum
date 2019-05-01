@@ -24,7 +24,7 @@ var app = {
 		//app.onBackKeyDown();
         //Check Login
         var oa_user_id = getStorage('oa_user_id');
-       // alert("USER1: " + oa_user_id);        
+        //alert("USER1: " + oa_user_id);        
         if(oa_user_id !== null && oa_user_id !== false && oa_user_id !== '' && oa_user_id !== undefined) {
         	//alert("HERE THREE!");
         	//$('#home-buttons').show();
@@ -388,7 +388,7 @@ function onError(contactError) {
 			//Get Alumns
 			//$.mobile.loading( "show" );
 			$.mobile.loading( "show", { theme: "a", text: "Loading", textVisible: true} );
-			var user_id = getStorage('oa_user_id');
+			var user_id = oa_user_id;
 			deleteStorage('oa_init_year');
 			var request = $.ajax({
 				url: serviceURL + 'alumns',
@@ -761,6 +761,7 @@ function onError(contactError) {
 	$(document).on( "pageshow", "#member-page", function(event) {
 		//$.mobile.loading( "show" );
 		$.mobile.loading( "show", { theme: "a", text: "Loading Member Profile", textVisible: true} );
+		var user_id = getStorage('oa_user_id');
 		//$('#member-profile').html('');
 		var id = getUrlParameter('id');
 		//alert(id);
@@ -788,7 +789,7 @@ function onError(contactError) {
 				if(obj.data.suffix !== null && obj.data.suffix !== undefined) {
 					full_name += ', ' + obj.data.suffix;
 				}
-				
+html += '<p>TEST THIS USER: ' + obj.data.user_id + ' - LOGGED IN USER: ' + user_id + '</p>';
 				html += '<div class="member-avatar">' + obj.data.avatar + '</div>';
 				html += '<div class="member-name">' + full_name + '</div>';
 				if(obj.data.email !== null && obj.data.email !== undefined) {
@@ -891,6 +892,9 @@ function onError(contactError) {
 				//$('#member-profile').hide().html(html).fadeIn();
 				setTimeout(function(){
 					$('#member-profile').hide().empty().html(html).fadeIn();
+					if(obj.data.user_id === user_id) {
+						$('#member-profile').after('<div id="updateProfileFixed"><a class="btn" id="" data-role="none" href="update-profile.html"><i class="fa fa-user-circle" aria-hidden="true"></i> Update Profile</button></a>');
+					}
 					$.mobile.loading( "hide" );
 				}, 200);
 				
@@ -906,6 +910,184 @@ function onError(contactError) {
 		  	alert( "Request failed Line 752: " + textStatus + " - " + jqXHR.responseText);
 		  	$.mobile.loading( "hide" );
 		});
+	});
+
+
+	$(document).on( "pageshow", "#update-profile-page", function(event) {
+		$.mobile.loading( "show", { theme: "a", text: "Loading Profile", textVisible: true} );
+		//$('#alumn').html('');
+		var user_id = getStorage('oa_user_id');
+	    //var user_id = getStorage('oa_user_id');
+		//alert(user_id);
+	
+		var user_data = getUserData(user_id);
+alert("USER DATA: " +  JSON.stringify(user_data) );
+		var request = $.ajax({
+			url: serviceURL + 'member_profile',
+		  	method: "GET",
+		  	data: { id : user_data.data.id },
+		  	dataType: "html"
+		});
+		request.done(function( data ) {
+			alert(data );
+			var obj = $.parseJSON( data );
+			if(obj.msg === 'success') {
+				
+				var full_name = '';
+				if(obj.data.salutation !== null && obj.data.salutation !== undefined) {
+					full_name += obj.data.salutation + ' ';
+				}
+				full_name += obj.data.first_name + ' ';
+				if(obj.data.middle_name !== null && obj.data.middle_name !== undefined) {
+					full_name += obj.data.middle_name + ' ';
+				}
+				full_name += obj.data.last_name;
+				if(obj.data.suffix !== null && obj.data.suffix !== undefined) {
+					full_name += ', ' + obj.data.suffix;
+				}
+				
+				var birthdate = '';
+				if(obj.data.birthdate !== null && obj.data.birthdate !== undefined) {
+					birthdate =  obj.data.birthdate;
+				}
+				
+				var spouse = '';
+				if(obj.data.spouse_name !== null && obj.data.spouse_name !== undefined) {
+					spouse = obj.data.spouse_name;
+				}
+				
+				var email = '';
+				if(obj.data.email !== null && obj.data.email !== undefined) {
+					email = obj.data.email;
+				}
+				
+				var phone = '';
+				if(obj.data.phone !== null && obj.data.phone !== undefined) {
+					phone = obj.data.phone;
+				}
+				
+				
+				if(obj.data.address !== null && obj.data.address !== undefined) {
+				
+				}
+				
+				if(obj.data.city !== null && obj.data.city !== undefined &&
+					obj.data.state !== null && obj.data.state !== undefined &&
+					obj.data.zipcode !== null && obj.data.zipcode !== undefined
+				) {
+
+				}
+				
+				
+				if(obj.data.employer_name !== null && obj.data.employer_name !== undefined) {
+				
+				}
+				if(obj.data.occupation !== null && obj.data.occupation !== undefined) {
+				
+				}
+				
+				if(obj.data.occupation_description !== null && obj.data.occupation_description !== undefined) {
+				
+				}
+				
+				if(obj.data.employer_address !== null && obj.data.employer_address !== undefined) {
+				
+				}
+				
+				if(obj.data.work_phone !== null && obj.data.work_phone !== undefined) {
+
+				}
+
+				
+				if(obj.data.hiring_position !== null && obj.data.hiring_position !== undefined) {
+
+				}
+				
+				if(obj.data.type_employment_seeking !== null && obj.data.type_employment_seeking !== undefined) {
+
+				}
+				var html = '';
+				html += '<div id="edit-profile-wrapper">';
+				html += '<h2>Edit Profile</h2>';
+				html += '<fieldset><legend>Personal Info</legend>';
+				html += '<div class="form-group"><label>Nickname:</label><input name="display_name" value="" class="edit-user-data form-input" placeholder="Display Name"></div>';
+				html += '<div class="form-group"><label>Birthdate:</label><input type="date" name="birthdate" value="' + birthdate + '" id="birthdate" class="edit-user-data form-input" placeholder=""></div>';
+				html += '<div class="form-group"><label>Spouse Name:</label><input name="spouse_name" value="' + spouse  + '" class="edit-user-data form-input" placeholder="Spouse Name"></div>';
+
+				html += '<div class="form-group"><label>Email Address:</label><input name="user_email" value="' + email + '" class="edit-user-data form-input" placeholder="Email Address">';
+				html += '<div class="info-alert">Changing your email address will force you to log back in using the new email address</div>';
+				html += '</div>';
+				
+				html += '<div class="form-group"><label>Mobile Phone:</label><input name="mobile_phone" value="" class="edit-user-data form-input" placeholder=""></div>';
+				html += '<div class="form-group"><label>Home Phone:</label><input name="home_phone" value="" class="edit-user-data form-input" placeholder=""></div>';
+				html += '<div class="form-group"><label>Home Address:</label><input name="address" value="" class="edit-user-data form-input" placeholder="Street Address"></div>';
+				html += '<div class="form-group"><label>City:</label><input name="city" value="" class="edit-user-data form-input" placeholder="City"></div>';
+				html += '<div class="form-group"><label>State:</label>';
+				html += '<select name="state" class="edit-user-data form-input">';
+				html += '<option value="">Choose State</option>';
+				html += '</select>';
+				html += '</div>';
+				html += '<div class="form-group"><label>Zip Code:</label><input name="zipcode" value="" class="edit-user-data form-input" placeholder="Zip Code"></div>';
+				html += '</fieldset>';
+						
+				html += '<fieldset><legend>Business Info</legend>';
+				html += '<div class="form-group"><label>Occupation:</label>';
+				html += '<select name="occupation" class="form-input">';
+				html += '<option value="">Choose Occupation</option>';
+				html += '</select>';
+				html += '</div>';
+				html += '<div class="form-group occ2" data-display="vvv"><label>Occupation Category:</label>';
+				html += '<select name="occupation2" class="form-input">';
+				html += '<option value="">Choose Occupation Category</option>';
+				html += '</select>';
+				html += '</div>';
+				html += '<div class="form-group"><label>Occupational Description:</label><textarea name="occupation_description" class="edit-user-data form-input" placeholder="Describe your occupation"> </textarea></div>';
+				html += '<div class="form-group"><label>Name of Company:</label><input name="employer_name" value="" class="edit-user-data form-input" placeholder="Employer Name"></div>';
+				html += '<div class="form-group"><label>Company Address:</label><input name="employer_address" value="" class="edit-user-data form-input" placeholder="Employer Address"></div>';
+				html += '<div class="form-group"><label>Work Phone:</label><input name="work_phone" value="" class="edit-user-data form-input" placeholder=""></div>';
+				html += '</fieldset>';
+		
+				html += '<fieldset><legend>Promote Your Business</legend>';
+				html += '<div class="form-group">';
+				html += '<label for="link_url">Upload Ad:</label>';
+				html += '<input name="ad" id="ad" type="file" />';
+				html += '</div>';
+				html += '<div class="form-group"><label for="">Are You Hiring:</label>';
+				html += '<input id="box1" type="radio" class="checkbox" name="are_you_hiring" value="Yes"><label for="box1">Yes</label>';
+				html += '<input id="box2" type="radio" class="checkbox" name="are_you_hiring" value="No"><label for="box2">No</label>';
+				html += '</div>';
+
+				html += '<div class="form-group"><label for="hiring_position">Describe position you are hiring:</label>';
+				html += '<textarea name="hiring_position" id="hiring_position" class="edit-user-data form-input" placeholder="Describe position"></textarea>';	
+				html += '</div>';
+				html += '<div class="form-group"><label for="seeking_employment">Are Seeking Employment:</label>';
+				html += '<input id="box3" type="radio" class="checkbox" name="seeking_employment" value="Yes"/><label for="box3">Yes</label>';
+				html += '<input id="box4" type="radio" class="checkbox" name="seeking_employment" value="No"/><label for="box4">No</label>';
+				html += '</div>';
+				html += '<div class="form-group"><label for="type_employment_seeking">Describe Type of Job you are seeking:</label>';
+				html += '<textarea name="type_employment_seeking" id="type_employment_seeking" class="edit-user-data form-input" placeholder="Describe Type of Job"></textarea>';
+				html += '</div>';
+				html += '</fieldset>';
+		
+				html += '<div class="form-group"><button type="button" class="updateUserDataBtn btn btn-primary btn-sm ">Save Changes</button> <button type="button" class="cancelUserDataBtn btn btn-sm btn-danger">Cancel</button></div>';
+			
+				html += '</div>';
+				
+				$('#member-profile-update').hide().empty().html(html).fadeIn();
+					
+				$.mobile.loading( "hide" );
+			}
+			else {
+				alert("Member page error");
+				$.mobile.loading( "hide" );
+			}
+		});
+		 
+		request.fail(function( jqXHR, textStatus, errorThrown ) {
+		  	alert( "Request failed Line 752: " + textStatus + " - " + jqXHR.responseText);
+		  	$.mobile.loading( "hide" );
+		});	
+	
 	});
 	
 	$(document).on( "pageshow", "#jobs-page", function(event) {
@@ -1716,8 +1898,9 @@ function onError(contactError) {
 	}
 	
 	function getStorage(name) {
-	
-		if (localStorage.getItem(name) === 'null' || localStorage.getItem(name) === null || localStorage.getItem(name) === '') {
+		//alert("GET STORAGE NAME: " + name);
+		//alert("STORAGE VALUE: " + localStorage.getItem(name));
+		if (localStorage.getItem(name) === 'null' || localStorage.getItem(name) === null || localStorage.getItem(name) === undefined || localStorage.getItem(name) === '') {
 			//alert("NO VALUE");
 			return false;
 		}
@@ -2045,7 +2228,7 @@ function onError(contactError) {
 			}
 			else {
 				//show error
-				alert("Alumns page error");
+				alert("Get Alumns page error");
 				$.mobile.loading( "hide" );
 			}
 

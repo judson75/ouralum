@@ -120,12 +120,17 @@ ul {
 }
 
 #menu-panel { background: #222222; color: #fff; font-size: 16px; }
+#menu-panel ul { list-style: none; margin: 20px 0 0 0; padding: 0 0 0 0; }
 
-.menuClose { display: block; text-align: right; font-size: 24px; padding: 5px;}
-
+.menuClose { display: block; text-align: left; font-size: 24px; padding: 5px;}
 
 #menu-panel a { color: #fff; }
 
+#menu-panel ul li a {
+	font-size: 20px;
+	padding: 6px 0;
+	display: block;
+}
 /* Portrait layout (default) */
 .app {
     background:url(../img/alum_logo.jpg) no-repeat center top; /* 170px x 200px */
@@ -503,8 +508,8 @@ textarea {
 }
 
 #save-button .btn {
-	border-radius: 0px;
     -webkit-border-radius: 0px;
+	border-radius: 0px;
 }
 
 #logoutFixed {
@@ -513,8 +518,8 @@ textarea {
 	left: 0;
 	width: 100%;
 	background: #fff;
-	border-radius: 0px;
     -webkit-border-radius: 0px;
+	border-radius: 0px;
     display: none;
     z-index: 990;	
 }
@@ -524,7 +529,23 @@ textarea {
 	margin: 10px auto;
 }
 
-#alum-list { padding-bottom: 35px; }
+#updateProfileFixed {
+	position: fixed;
+	bottom: 0px;
+	left: 0;
+	width: 100%;
+	background: #fff;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+    z-index: 990;	
+}
+
+#updateProfileFixed .btn{
+	width: 90%;
+	margin: 10px auto;
+}
+
+#alum-list, #member-profile, #alumn_content { padding-bottom: 35px; }
 
 #alum-list ul {
 	list-style: none;

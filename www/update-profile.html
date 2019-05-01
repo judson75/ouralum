@@ -14,27 +14,25 @@
 </head>
 
 <body>
-	<div data-role="page" id="member-page">
+	<div data-role="page" id="update-profile-page">
+		<!--
+		<div data-role="panel" id="menu-panel" data-position="right" data-display="push" >
+   			<a href="#menu-panel" data-rel="close" class="menuClose"><i class="fa fa-times" aria-hidden="true"></i></a>
+   			<ul>
+   				<li><a href="update-profile.html" class="" id="" data-role="none">Edit Profile</a></li>
+   				<li><a href="javascript:void(0);" class="logoutBtn" id="" data-role="none">Logout</a></li>
+   			</ul>
+		</div><!-- /panel 
+		-->
 		<div class="page-header">
-			<div id="header-left"><a href="javascript:Void(0);" onclick="window.history.back()" data-role="none" data-transition="slide" data-direction="reverse"><i class="fa fa-arrow-left" aria-hidden="true"></i></a></div>
-			<!--<div id="header-left"><a href="index.html" data-role="none" data-transition="slide" data-direction="reverse"><i class="fa fa-home" aria-hidden="true"></i></a></div>-->
-			<div id="logo"><a href="index.html" data-role="none" data-transition="slide" data-direction="reverse"><img src="img/alum_logo.jpg"></a></div>
-			<div id="header-right"></div>
-		</div>
-		<div id="member-profile" class="app-page">
-			<div id="alum-logo-ph">&nbsp;</div>
-			<div class="alum-title-ph"></div>
-			<div class="alum-posts-ph">
-				<div class="alum-post-ph"></div>
-				<div class="alum-post-ph"></div>
+			<div id="header-left"></div>
+			<div id="logo" style="margin-left: 20%;"><a href="index.html" data-role="none" data-transition="slide" data-direction="reverse"><img src="img/alum_logo.jpg"></a></div>
+			<div id="header-right">
+				<a href="#menu-panel"><i class="fa fa-bars" aria-hidden="true"></i></a>
 			</div>
-			<div class="alum-title-ph"></div>
-			<div class="alum-posts-ph">
-				<div class="alum-post-ph"></div>
-				<div class="alum-post-ph"></div>
-			</div>
+			<div class="clr"></div>
 		</div>
-		
+		<div id="member-profile-update" class="app-page"></div>
 	</div>
    
     <script type="text/javascript" src="cordova.js"></script>
