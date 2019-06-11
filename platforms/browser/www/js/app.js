@@ -477,15 +477,19 @@ function onError(contactError) {
 			//alert("INIT YEAR: " + init_year);
 			if(init_year == '' || init_year == null || init_year == undefined || init_year == false) {
 				setStorage('oa_init_year', initiation_year);
-				init_year = getStorage('oa_init_year');
+				init_year = getStorage('oa_init_year');  
 			}
 		}
 		//alert("UD: " + user_data);
 		//alert("SHOW ID: " + id);
+		//alert("INIT YEAR: " + init_year );
+
 		var url = serviceURL + 'alumn';
 		if(init_year != '' && init_year != null && init_year != undefined && init_year != false) {
 			url += '?init_year=' + init_year;
 		}
+		//alert("URL: " + url);
+
 		var request = $.ajax({
 			url: url,
 		  	method: "GET",
@@ -498,6 +502,7 @@ function onError(contactError) {
 			if(obj.msg === 'success') {
 				var html = '';
 				//
+				//alert("P: " + obj.data.percents.list_html);
 				var title_css = 'alum-title';
 				if(obj.data.logo_src !== null && obj.data.logo_src !== undefined) {
 					html += '<div id="alum-logo"><img src="' + obj.data.logo_src + '"></div>';
@@ -505,11 +510,9 @@ function onError(contactError) {
 				}
 				
 				html += '<div id="alum-title" class="' + title_css + '">' + obj.data.group_name + '</div>';
-	//alert("DESC: " + obj.data.group_description);
 				if(obj.data.group_description !== null && obj.data.group_description !== '' && obj.data.group_description !== 'null') {
 					html += '<div id="alum-desc">' + obj.data.group_description + '</div>';
 				}
-	//alert("POSTS: " + obj.data.posts);
 				
 				if(obj.data.posts !== undefined) {
 					html += '<div id="alum-posts">';
@@ -576,6 +579,83 @@ function onError(contactError) {
 				//html += '</div>';
 				
 	//alert("MEMBERS: " + obj.data.members);
+				/* Update Percentages */
+				//var gtype = 'top-classes';
+				//getAlumnUpdatePercent(init_year, gtype, id, function(output){
+				//	alert(output);
+				//}); 
+				//alert(obj.data.percents.list_html);
+				if(obj.data.percents != '' && obj.data.percents != undefined) {
+					//alert(obj.data.percents.script);
+					//alert(obj.data.percents.percent);
+					$('body').append(obj.data.percents.script);
+					//obj.data.percents.list_html
+			 		//$('#top-p').html(obj.data.percents.list_html);
+					var percC = 100 - obj.data.percents.percent;
+					var percN = 100 - percC;
+					var offset = (50 - percN) + 75;
+					//offet = 75 + diff in 50% (50 - percN) 
+					html += '<div id="alum-precentages">';
+					html += '<h2 class="section-title">Alum Class Update Percentage</h2>';
+					html += '<div id="doughnutChart" class="chart">';
+					
+					html += '<svg width="100%" height="100%" viewBox="0 0 42 42" class="donut">';
+					html += '<circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>';
+					//RING
+					html += '<circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#337ab7" stroke-width="5"></circle>';
+					//PERCENT
+					html += '<circle class="donut-segment" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#e1e1e1" stroke-width="5" stroke-dasharray="' + percC + ' ' + percN + '" stroke-dashoffset="' + offset  + '"></circle>';
+					html += '</svg>';
+					
+					html += '<div class="doughnutSummary" style="width: 115px; height: 115px; margin-left: -57.5px; margin-top: -57.5px;"><p class="doughnutSummaryTitle">Alum Members:</p><p class="doughnutSummaryNumber" style="opacity: 1;">' + obj.data.percents.percent + '%</p></div>';
+					html += '</div>';
+					
+					html += '</div>';
+					
+					html += '<div class="clr"></div>';
+					
+					html += '<div id="tp-block">';
+						html += '<div id="sl123" class="tp-selector">';
+							html += '<h5><span>Top Classes</span> <i class="fa fa-caret-down"></i></h5>';
+							html += '<div id="sl123-block" class="tp-selections">';
+								html += '<ul id="tp-type">';
+								html += '<li data-val="top-classes" data-type="order" class="active" data-init="' + init_year + '">Top Classes</li>';
+								html += '<li data-val="bottom-classes" data-type="order" data-init="' + init_year + '">Bottom Classes</li>';
+								html += '</ul>';
+							html += '</div>';
+						html += '</div>';
+						
+						
+						html += '<div id="sr123" class="tp-selector">';
+							html += '<h5>Initiation Year <i class="fa fa-caret-down"></i></h5>';
+							html += '<div id="sr123-block" class="tp-selections">';
+								html += '<ul id="tp-year">';
+								//get initiation years
+									html += '<li data-val="all" data-type="year" data-init="' + init_year + '" class="active">All</li>';
+									var y = (new Date()).getFullYear();
+									//alert(init_year);
+									var min_year = parseInt(y) - 100;
+									for (var i = y; i >= min_year; i--){
+										//html += '<option value="' + i + '"';
+										//if(i === init_year) {
+										//	html += ' selected';	
+										//}
+										//html += '>' + i + '</option>';
+										var li_class = '';
+										if(i === init_year) {
+											li_class = 'active';	
+										}
+
+										html += '<li data-val="' + i + '" data-type="year" class="' + li_class+ '">' + i + '</li>';
+									}									
+								html += '</ul>';
+							html += '</div>';
+						html += '</div>';
+						html += '<div class="clr"></div>';
+						html += '<ul id="top-p">' + obj.data.percents.list_html + '</ul>';
+					html += '</div>';
+					
+				}
 				
 				if(obj.data.members !== undefined) {
 					html += '<div id="alum-members">';
@@ -789,7 +869,7 @@ function onError(contactError) {
 				if(obj.data.suffix !== null && obj.data.suffix !== undefined) {
 					full_name += ', ' + obj.data.suffix;
 				}
-html += '<p>TEST THIS USER: ' + obj.data.user_id + ' - LOGGED IN USER: ' + user_id + '</p>';
+//html += '<p>TEST THIS USER: ' + obj.data.user_id + ' - LOGGED IN USER: ' + user_id + '</p>';
 				html += '<div class="member-avatar">' + obj.data.avatar + '</div>';
 				html += '<div class="member-name">' + full_name + '</div>';
 				if(obj.data.email !== null && obj.data.email !== undefined) {
@@ -893,7 +973,7 @@ html += '<p>TEST THIS USER: ' + obj.data.user_id + ' - LOGGED IN USER: ' + user_
 				setTimeout(function(){
 					$('#member-profile').hide().empty().html(html).fadeIn();
 					if(obj.data.user_id === user_id) {
-						$('#member-profile').after('<div id="updateProfileFixed"><a class="btn" id="" data-role="none" href="update-profile.html"><i class="fa fa-user-circle" aria-hidden="true"></i> Update Profile</button></a>');
+						$('#member-profile').after('<div id="updateProfileFixed"><a class="btn" id="" data-role="none" href="update-profile.html" data-transition="slide"><i class="fa fa-user-circle" aria-hidden="true"></i> Update Profile</button></a>');
 					}
 					$.mobile.loading( "hide" );
 				}, 200);
@@ -921,7 +1001,7 @@ html += '<p>TEST THIS USER: ' + obj.data.user_id + ' - LOGGED IN USER: ' + user_
 		//alert(user_id);
 	
 		var user_data = getUserData(user_id);
-alert("USER DATA: " +  JSON.stringify(user_data) );
+//alert("USER DATA: " +  JSON.stringify(user_data) );
 		var request = $.ajax({
 			url: serviceURL + 'member_profile',
 		  	method: "GET",
@@ -929,9 +1009,19 @@ alert("USER DATA: " +  JSON.stringify(user_data) );
 		  	dataType: "html"
 		});
 		request.done(function( data ) {
-			alert(data );
+//alert(data );
 			var obj = $.parseJSON( data );
 			if(obj.msg === 'success') {
+				var stateList;
+				
+				getStateList(function(output){
+					stateList = output;
+				});
+				
+				var occupationList = '';
+				getOccupationList(function(output){
+					occupationList = output;
+				});
 				
 				var full_name = '';
 				if(obj.data.salutation !== null && obj.data.salutation !== undefined) {
@@ -946,9 +1036,23 @@ alert("USER DATA: " +  JSON.stringify(user_data) );
 					full_name += ', ' + obj.data.suffix;
 				}
 				
+				var displayname = '';
+				//display_name
+				if(obj.data.display_name !== null) {
+					displayname = obj.data.display_name;
+				}
+				else {
+					displayname = full_name;
+				}
+				
 				var birthdate = '';
 				if(obj.data.birthdate !== null && obj.data.birthdate !== undefined) {
 					birthdate =  obj.data.birthdate;
+				}
+				
+				var birthdate_db = '';
+				if(obj.data.birthdate_db !== null && obj.data.birthdate_db !== undefined) {
+					birthdate_db =  obj.data.birthdate_db;
 				}
 				
 				var spouse = '';
@@ -966,9 +1070,24 @@ alert("USER DATA: " +  JSON.stringify(user_data) );
 					phone = obj.data.phone;
 				}
 				
-				
+				var address = '';
 				if(obj.data.address !== null && obj.data.address !== undefined) {
+					address = obj.data.address;
+				}
 				
+				var city = '';
+				if(obj.data.city !== null && obj.data.city!== undefined) {
+					city = obj.data.city;
+				}
+				
+				var state = '';
+				if(obj.data.state !== null && obj.data.state !== undefined) {
+					state = obj.data.state;
+				}
+				
+				var zipcode = '';
+				if(obj.data.zipcode !== null && obj.data.zipcode !== undefined) {
+					zipcode = obj.data.zipcode;
 				}
 				
 				if(obj.data.city !== null && obj.data.city !== undefined &&
@@ -978,102 +1097,189 @@ alert("USER DATA: " +  JSON.stringify(user_data) );
 
 				}
 				
-				
+				var employer_name = '';
 				if(obj.data.employer_name !== null && obj.data.employer_name !== undefined) {
-				
+					employer_name = obj.data.employer_name;
 				}
+				
+				var occupation = '';
 				if(obj.data.occupation !== null && obj.data.occupation !== undefined) {
-				
+					occupation = obj.data.occupation;
+					var occupationCatList = '';
+					getOccupationCatList(occupation, function(output){
+						occupationCatList = output;
+					});
 				}
 				
+				var occupation_description = '';
 				if(obj.data.occupation_description !== null && obj.data.occupation_description !== undefined) {
-				
+					occupation_description = obj.data.occupation_description;
 				}
+				//alert(obj.data.occupation2);
+				var occupation_category = '';
+				if(obj.data.occupation2 !== null && obj.data.occupation2 !== undefined) {
+					occupation_category = obj.data.occupation2;
+				}
+
 				
+				var employer_address = '';
 				if(obj.data.employer_address !== null && obj.data.employer_address !== undefined) {
-				
+					employer_address = obj.data.employer_address;
 				}
 				
+				var work_phone = ''
 				if(obj.data.work_phone !== null && obj.data.work_phone !== undefined) {
-
+					work_phone = obj.data.work_phone;
 				}
-
+		
+				var are_you_hiring = '';
+				if(obj.data.are_you_hiring !== null && obj.data.are_you_hiring !== undefined) {
+					are_you_hiring = obj.data.are_you_hiring;
+				}
 				
+				var hiring_position = '';
 				if(obj.data.hiring_position !== null && obj.data.hiring_position !== undefined) {
-
+					hiring_position = obj.data.hiring_position;
 				}
+				
+				var type_employment_seeking = '';
 				
 				if(obj.data.type_employment_seeking !== null && obj.data.type_employment_seeking !== undefined) {
-
+					type_employment_seeking = obj.data.type_employment_seeking;
 				}
+				
+				var seeking_employment = '';
+				if(obj.data.seeking_employment !== null && obj.data.seeking_employment !== undefined) {
+					seeking_employment = obj.data.seeking_employment;
+				}
+				
 				var html = '';
+				//alert(birthdate_db);
 				html += '<div id="edit-profile-wrapper">';
 				html += '<h2>Edit Profile</h2>';
+				html += '<form id="edit-profile-frm" method="post">';
+				html += '<input type="hidden" name="user_id" value="' + user_id + '">';
 				html += '<fieldset><legend>Personal Info</legend>';
-				html += '<div class="form-group"><label>Nickname:</label><input name="display_name" value="" class="edit-user-data form-input" placeholder="Display Name"></div>';
-				html += '<div class="form-group"><label>Birthdate:</label><input type="date" name="birthdate" value="' + birthdate + '" id="birthdate" class="edit-user-data form-input" placeholder=""></div>';
+				html += '<div class="form-group"><label>Nickname:</label><input name="display_name" value="' + displayname + '" class="edit-user-data form-input" placeholder="Display Name"></div>';
+				html += '<div class="form-group"><label>Birthdate:</label><input type="date" name="birthdate" value="' + birthdate_db + '" id="birthdate" class="edit-user-data form-input" placeholder=""></div>';
 				html += '<div class="form-group"><label>Spouse Name:</label><input name="spouse_name" value="' + spouse  + '" class="edit-user-data form-input" placeholder="Spouse Name"></div>';
 
 				html += '<div class="form-group"><label>Email Address:</label><input name="user_email" value="' + email + '" class="edit-user-data form-input" placeholder="Email Address">';
 				html += '<div class="info-alert">Changing your email address will force you to log back in using the new email address</div>';
 				html += '</div>';
 				
-				html += '<div class="form-group"><label>Mobile Phone:</label><input name="mobile_phone" value="" class="edit-user-data form-input" placeholder=""></div>';
+				html += '<div class="form-group"><label>Mobile Phone:</label><input name="mobile_phone" value="' + phone  + '" class="edit-user-data form-input" placeholder=""></div>';
 				html += '<div class="form-group"><label>Home Phone:</label><input name="home_phone" value="" class="edit-user-data form-input" placeholder=""></div>';
-				html += '<div class="form-group"><label>Home Address:</label><input name="address" value="" class="edit-user-data form-input" placeholder="Street Address"></div>';
-				html += '<div class="form-group"><label>City:</label><input name="city" value="" class="edit-user-data form-input" placeholder="City"></div>';
+				html += '<div class="form-group"><label>Home Address:</label><input name="address" value="' + address  + '" class="edit-user-data form-input" placeholder="Street Address"></div>';
+				html += '<div class="form-group"><label>City:</label><input name="city" value="' + city + '" class="edit-user-data form-input" placeholder="City"></div>';
 				html += '<div class="form-group"><label>State:</label>';
 				html += '<select name="state" class="edit-user-data form-input">';
 				html += '<option value="">Choose State</option>';
+				$.each( stateList, function( state_abbr, state_name ) {
+					//alert( key + ": " + value.group_id );
+					html += '<option value="' + state_abbr + '"';
+					if(state_abbr == state) {
+						html += ' selected';
+					}
+					html += '>' + state_name + '</option>';
+				});
 				html += '</select>';
 				html += '</div>';
-				html += '<div class="form-group"><label>Zip Code:</label><input name="zipcode" value="" class="edit-user-data form-input" placeholder="Zip Code"></div>';
+				html += '<div class="form-group"><label>Zip Code:</label><input name="zipcode" value="' + zipcode  + '" class="edit-user-data form-input" placeholder="Zip Code"></div>';
 				html += '</fieldset>';
 						
 				html += '<fieldset><legend>Business Info</legend>';
 				html += '<div class="form-group"><label>Occupation:</label>';
 				html += '<select name="occupation" class="form-input">';
 				html += '<option value="">Choose Occupation</option>';
+				
+				$.each( occupationList , function( oc, occupation_name ) {
+					// alert( key + ": " + value.group_id );
+					html += '<option value="' + occupation_name + '"';
+					if(occupation_name == occupation) {
+						html += ' selected';
+					}
+					html += '>' + occupation_name + '</option>';
+				});				
 				html += '</select>';
 				html += '</div>';
 				html += '<div class="form-group occ2" data-display="vvv"><label>Occupation Category:</label>';
 				html += '<select name="occupation2" class="form-input">';
 				html += '<option value="">Choose Occupation Category</option>';
+				$.each( occupationCatList , function( oc, occupation_cat_name ) {
+					// alert( key + ": " + value.group_id );
+					html += '<option value="' + occupation_cat_name + '"';
+					if(occupation_cat_name == occupation_category) {
+						html += ' selected';
+					}
+					html += '>' + occupation_cat_name + '</option>';
+				});	
 				html += '</select>';
 				html += '</div>';
-				html += '<div class="form-group"><label>Occupational Description:</label><textarea name="occupation_description" class="edit-user-data form-input" placeholder="Describe your occupation"> </textarea></div>';
-				html += '<div class="form-group"><label>Name of Company:</label><input name="employer_name" value="" class="edit-user-data form-input" placeholder="Employer Name"></div>';
-				html += '<div class="form-group"><label>Company Address:</label><input name="employer_address" value="" class="edit-user-data form-input" placeholder="Employer Address"></div>';
-				html += '<div class="form-group"><label>Work Phone:</label><input name="work_phone" value="" class="edit-user-data form-input" placeholder=""></div>';
+				html += '<div class="form-group"><label>Occupational Description:</label><textarea name="occupation_description" class="edit-user-data form-input" placeholder="Describe your occupation">' + occupation_description + '</textarea></div>';
+				html += '<div class="form-group"><label>Name of Company:</label><input name="employer_name" value="' + employer_name + '" class="edit-user-data form-input" placeholder="Employer Name"></div>';
+				html += '<div class="form-group"><label>Company Address:</label><input name="employer_address" value="' + employer_address + '" class="edit-user-data form-input" placeholder="Employer Address"></div>';
+				html += '<div class="form-group"><label>Work Phone:</label><input name="work_phone" value="' + work_phone + '" class="edit-user-data form-input" placeholder=""></div>';
 				html += '</fieldset>';
 		
 				html += '<fieldset><legend>Promote Your Business</legend>';
+				/*
 				html += '<div class="form-group">';
 				html += '<label for="link_url">Upload Ad:</label>';
 				html += '<input name="ad" id="ad" type="file" />';
 				html += '</div>';
+				*/
+				
+				/*
 				html += '<div class="form-group"><label for="">Are You Hiring:</label>';
 				html += '<input id="box1" type="radio" class="checkbox" name="are_you_hiring" value="Yes"><label for="box1">Yes</label>';
 				html += '<input id="box2" type="radio" class="checkbox" name="are_you_hiring" value="No"><label for="box2">No</label>';
 				html += '</div>';
-
+				*/
+			
+				html += '<div class="form-group"><label for="">Are You Hiring:</label>';
+				html += '<label class="toggle">No ';
+				html += '<input class="toggle-checkbox" type="checkbox" name="are_you_hiring" value="Yes"';
+				if(are_you_hiring == 'Yes') {
+					html += ' checked';
+				}
+				html += '>';
+				html += '<div class="toggle-switch"></div>';
+				html += '<span class="toggle-label">Yes</span>';
+				html += '</div>';	
+					
 				html += '<div class="form-group"><label for="hiring_position">Describe position you are hiring:</label>';
-				html += '<textarea name="hiring_position" id="hiring_position" class="edit-user-data form-input" placeholder="Describe position"></textarea>';	
+				html += '<textarea name="hiring_position" id="hiring_position" class="edit-user-data form-input" placeholder="Describe position">' + hiring_position + '</textarea>';	
 				html += '</div>';
+				
+				/*
 				html += '<div class="form-group"><label for="seeking_employment">Are Seeking Employment:</label>';
 				html += '<input id="box3" type="radio" class="checkbox" name="seeking_employment" value="Yes"/><label for="box3">Yes</label>';
 				html += '<input id="box4" type="radio" class="checkbox" name="seeking_employment" value="No"/><label for="box4">No</label>';
 				html += '</div>';
+				*/
+				
+				html += '<div class="form-group"><label for="">Are You Seeking Employment:</label>';
+				html += '<label class="toggle">No ';
+				html += '<input class="toggle-checkbox" type="checkbox" name="seeking_employment" value="Yes"';
+				if(seeking_employment == 'Yes') {
+					html += ' checked';
+				}
+				html += '>';
+				html += '<div class="toggle-switch"></div>';
+				html += '<span class="toggle-label">Yes</span>';
+				html += '</div>';
+				
 				html += '<div class="form-group"><label for="type_employment_seeking">Describe Type of Job you are seeking:</label>';
-				html += '<textarea name="type_employment_seeking" id="type_employment_seeking" class="edit-user-data form-input" placeholder="Describe Type of Job"></textarea>';
+				html += '<textarea name="type_employment_seeking" id="type_employment_seeking" class="edit-user-data form-input" placeholder="Describe Type of Job">' + type_employment_seeking + '</textarea>';
 				html += '</div>';
 				html += '</fieldset>';
 		
-				html += '<div class="form-group"><button type="button" class="updateUserDataBtn btn btn-primary btn-sm ">Save Changes</button> <button type="button" class="cancelUserDataBtn btn btn-sm btn-danger">Cancel</button></div>';
+				html += '<div class="form-group"><button type="button" class="updateUserDataBtn btn">Save Changes</button> <button type="button" class="cancelUserDataBtn btn btn-danger" onclick="window.history.back();" data-transition="slide" data-direction="reverse">Cancel</button></div>';
 			
 				html += '</div>';
-				
-				$('#member-profile-update').hide().empty().html(html).fadeIn();
+				html += '</form>';
+				$('#member-profile-update').hide().empty().html(html).fadeIn(); 
 					
 				$.mobile.loading( "hide" );
 			}
@@ -1473,6 +1679,49 @@ alert("USER DATA: " +  JSON.stringify(user_data) );
 		
 	});
 	
+	$(document).on('click', '.tp-selector', function() {
+		if($(this).hasClass('open')) {
+			$(this).find('.tp-selections').hide();
+			$(this).removeClass('open');
+			$(this).find('fa').addClass('fa-caret-down');
+			$(this).find('fa').removeClass('fa-caret-up');
+
+		}
+		else {
+			$(this).find('.tp-selections').show();
+			$(this).addClass('open');
+			$(this).find('fa').removeClass('fa-caret-down');
+			$(this).find('fa').addClass('fa-caret-up');
+		}
+	});
+		
+	$(document).on('click', '#tp-type li', function() {
+		//var val = $(this).data('val');
+		$('#tp-type li').removeClass('active');
+		$(this).addClass('active');
+		var init_year = $(this).data('init');	
+		var type = $(this).data('val');
+		var year = $('#tp-year li.active').data('val');
+		var group_id = $('input[name="group_id"]').val();
+		
+		$('#sl123 h5 span').html($(this).html());
+		
+		redrawDonut(init_year, type, group_id, 'all');
+			
+	});
+		
+	$(document).on('click', '#tp-year li', function() {
+		$('#tp-year li').removeClass('active');
+		$(this).addClass('active');
+		var init_year = $(this).data('init');	
+		var type = $('#tp-type li.active').data('val');
+		var year = $(this).data('val');
+		var group_id = $('input[name="group_id"]').val();
+
+		redrawDonut(init_year, type, group_id, year);
+	});
+
+
 	$(document).on('change', 'select[name="photo_year"]', function() {
 		$(this).parent().find('.error').remove();
 		$(this).parent().removeClass('hasError');
@@ -1827,6 +2076,93 @@ alert("USER DATA: " +  JSON.stringify(user_data) );
 		});
 	});
 	
+	$(document).on('click', '.updateUserDataBtn', function () {
+		$.mobile.loading( "show", { theme: "a", text: "Saving Profile", textVisible: true} );
+		//var form = document.getElementById('edit-profile-frm');
+		//formData = new FormData(form);
+		var user_name = $('input[name="user_name"]').val();
+		var display_name = $('input[name="display_name"]').val();
+		var email = $('input[name="user_email"]').val();
+		var phone = $('input[name="phone"]').val();
+		var address = $('input[name="address"]').val();
+		var city = $('input[name="city"]').val();
+		var state = $('select[name="state"]').val();
+		var zipcode = $('input[name="zipcode"]').val();
+		var birthdate = $('input[name="birthdate"]').val();
+		var spouse_name = $('input[name="spouse_name"]').val();
+		var mobile_phone = $('input[name="mobile_phone"]').val();
+		var home_phone = $('input[name="home_phone"]').val();
+		var user_id = $('input[name="user_id"]').val();
+	//alert("USER ID:: " + user_id);
+	//return false;	
+		var occupation = $('select[name="occupation"]').val();
+		var occupation2 = $('select[name="occupation2"]').val();
+		var occupation_description = $('textarea[name="occupation_description"]').val();
+		var employer_name = $('input[name="employer_name"]').val();
+		var employer_address = $('input[name="employer_address"]').val();
+		var work_phone = $('input[name="work_phone"]').val();
+		var group_id = '';
+		if($('input[name="group_id"]').length) {
+			group_id = $('input[name="group_id"]').val();
+		}
+		
+		var are_you_hiring = ($('input[name="are_you_hiring"]:checked').val() !== undefined) ? $('input[name="are_you_hiring"]:checked').val() : '';
+		var hiring_position = $('textarea[name="hiring_position"]').val();
+		var seeking_employment = ($('input[name="seeking_employment"]:checked').val() !== undefined) ? $('input[name="seeking_employment"]:checked').val() : '' ;
+		var type_employment_seeking = $('textarea[name="type_employment_seeking"]').val();
+		
+		var formData = new FormData();
+		//formData.append('action', 'update_user_data');
+		//formData.append('ad', $('#ad')[0].files[0]);
+		
+		formData.append('user_id', user_id);
+		formData.append('email', email);
+		formData.append('phone', phone);
+		formData.append('city', city);
+		formData.append('state', state);
+		formData.append('zipcode', zipcode);
+		formData.append('address', address);
+		formData.append('occupation', occupation);
+		formData.append('occupation2', occupation2);
+		formData.append('occupation_description', occupation_description);
+		formData.append('display_name', display_name);
+		formData.append('username', user_name);
+		formData.append('employer_name', employer_name);
+		formData.append('employer_address', employer_address);
+		formData.append('birthdate', birthdate);
+		formData.append('spouse_name', spouse_name);
+		formData.append('mobile_phone', mobile_phone);
+		formData.append('home_phone', home_phone);
+		formData.append('work_phone', work_phone);
+		formData.append('are_you_hiring', are_you_hiring);
+		formData.append('hiring_position', hiring_position);
+		formData.append('seeking_employment', seeking_employment);
+		formData.append('type_employment_seeking', type_employment_seeking);
+		if(group_id != '') {
+			formData.append('group_id', group_id);
+		} 
+		//alert(serviceURL + 'profile');
+		//alert(formData);
+		var request = $.ajax({
+			url: serviceURL + 'profile',
+			method: "POST",
+			data: formData,
+			dataType: "html",
+			cache: false,
+			contentType: false,
+	        processData: false,
+		});
+		request.done(function( data ) {
+			//alert(data );
+			var obj = $.parseJSON( data );
+			$.mobile.loading( "hide" );
+			$('body').prepend('<div class="alert-popup alert-info">Your profile has been updated!</div>');
+			setTimeout(function(){
+				$('.alert-popup').fadeOut('slow', function() { $(this).remove(); });
+			}, 2000);
+
+		});
+	});
 	
 	function setUserToken(oa_user_id, token) {
 		//alert("USER: " + oa_user_id + " - TOKEN: " + token);
@@ -2112,6 +2448,148 @@ alert("USER DATA: " +  JSON.stringify(user_data) );
 		});
 	}
 	
+	
+	
+	function getStateList(callback) {
+		var request = $.ajax({
+			url: serviceURL + 'states',
+		  	method: "GET",
+		  	data: '',
+		  	dataType: "html",
+		  	async: false
+		});
+		 
+		request.done(function( data ) {
+			//alert("STATES: " + data);
+			obj = $.parseJSON( data );
+			callback( obj.data );
+		});
+	}
+	
+	function getOccupationList(callback) {
+		var request = $.ajax({
+			url: serviceURL + 'occupations',
+		  	method: "GET",
+		  	data: '',
+		  	dataType: "html",
+		  	async: false
+		});
+		 
+		request.done(function( data ) {
+			//alert(data);
+			obj = $.parseJSON( data );
+			callback( obj.data);
+		});
+	}
+	
+	function getOccupationCatList(occupation, callback) {
+		var request = $.ajax({
+			url: serviceURL + 'occupation_categories?occupation=' + occupation,
+		  	method: "GET",
+		  	data: '',
+		  	dataType: "html",
+		  	async: false
+		});
+		 
+		request.done(function( data ) {
+			//alert(data);
+			obj = $.parseJSON( data );
+			callback( obj.data);
+		});
+	}
+	
+	function getAlumnUpdatePercent(year, type, group_id, callback) {
+		var request = $.ajax({
+			url: serviceURL + 'get_group_percentage',
+		  	method: "GET",
+		  	data: {year: year, type: type, group_id: group_id},
+		  	dataType: "html",
+		  	async: false
+		});
+		 
+		request.done(function( data ) {
+			alert(data);
+			obj = $.parseJSON( data );
+			callback( obj.data);
+		});
+	}
+	
+	function redrawDonut(init_year, type, group_id, year) {
+	
+	//alert("INIT YEAR: " + init_year + " - YEAR: " + year + " - TYPE: " + type + " - GROUP: " +  group_id);
+		$('#dc-alert').remove();
+		var request = $.ajax({
+			url: serviceURL + 'get_group_percentage',
+		  	method: "GET",
+		  	data: {init_year: init_year, year: year, type: type, group_id: group_id},
+		  	dataType: "html"
+		});
+		 
+		request.done(function( data ) {
+			//alert("DATA: " + data);
+			if(data === '') {
+				$('#tp-block').prepend('<div id="dc-alert" class="alert alert-info">No members for this selection</div>');
+			}
+			obj = $.parseJSON( data );
+			//alert(obj.code); 
+			if(obj.data.list_html  === '') {
+				$('#tp-block').prepend('<div id="dc-alert" class="alert alert-info">No members for this selection</div>');
+				return false;
+			}
+
+			if(obj.code === 1) {
+			//	$('#doughnutChart').html('');
+				$('#top-p').html(obj.data.list_html);
+		
+				if(year != '' && year != undefined) {
+					//alert(obj.data.percent);		
+					var html = '';
+					var percC = 100 - obj.data.percent;
+					var percN = 100 - percC;
+					var offset = (50 - percN) + 75;
+					//offet = 75 + diff in 50% (50 - percN) 					
+					html += '<svg width="100%" height="100%" viewBox="0 0 42 42" class="donut">';
+					html += '<circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>';
+					//RING
+					html += '<circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#337ab7" stroke-width="5"></circle>';
+					//PERCENT
+					html += '<circle class="donut-segment" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#e1e1e1" stroke-width="5" stroke-dasharray="' + percC + ' ' + percN + '" stroke-dashoffset="' + offset + '"></circle>';
+					html += '</svg>';
+					
+					html += '<div class="doughnutSummary" style="width: 115px; height: 115px; margin-left: -57.5px; margin-top: -57.5px;"><p class="doughnutSummaryTitle">Alum Members:</p><p class="doughnutSummaryNumber" style="opacity: 1;">' + obj.data.percent + '%</p></div>';
+					$('#doughnutChart').html(html);		
+				}
+			}
+		});
+
+
+		
+		/*
+		
+			$('#alum_chart').remove();
+			$('#doughnutChart').html('');
+			//console.log("TYPE: " + type + " - YEAR: " + year);
+			//add overlay ...
+			
+			
+			//do the ajax to get new values
+			$.post(ajaxurl, { action: 'get_alum_percents', type: type, year: year, group_id: group_id}, function(data) {
+			    console.log("DAtA: " + data);
+				var obj = $.parseJSON(data);
+				var response = obj.resp;
+				if(response == 'success') {
+					$('#top-p').html(obj.list_html);
+					$('body').append(obj.script);
+					$('#member_chart_inner').show();
+					$('#member_chart').find('.div-overlay').remove();
+				}
+				else {
+	
+				}
+			});
+			*/
+	}
+	
 	function setContactPerm(v) {
 		setStorage('oa_contact_perms', v);
 	}
@@ -2239,3 +2717,248 @@ alert("USER DATA: " +  JSON.stringify(user_data) );
 			$.mobile.loading( "hide" );
 		});
 	}
+	
+	
+	$.fn.drawDoughnutChart = function(data, options) {
+    var $this = this,
+      W = $this.width(),
+      H = $this.height(),
+      centerX = W/2,
+      centerY = H/2,
+      cos = Math.cos,
+      sin = Math.sin,
+      PI = Math.PI,
+      settings = $.extend({
+        segmentShowStroke : true,
+        segmentStrokeColor : "#0C1013",
+        segmentStrokeWidth : 1,
+        baseColor: "rgba(0,0,0,0.5)",
+        baseOffset: 4,
+        edgeOffset : 10,//offset from edge of $this
+        percentageInnerCutout : 75,
+        animation : true,
+        animationSteps : 90,
+        animationEasing : "easeInOutExpo",
+        animateRotate : true,
+        tipOffsetX: -8,
+        tipOffsetY: -45,
+        tipClass: "doughnutTip",
+        summaryClass: "doughnutSummary",
+        summaryTitle: "Alum Members:",
+        summaryTitleClass: "doughnutSummaryTitle",
+        summaryNumberClass: "doughnutSummaryNumber",
+        beforeDraw: function() {  },
+        afterDrawed : function() {  },
+        onPathEnter : function(e,data) {  },
+        onPathLeave : function(e,data) {  }
+      }, options),
+      animationOptions = {
+        linear : function (t) {
+          return t;
+        },
+        easeInOutExpo: function (t) {
+          var v = t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t;
+          return (v>1) ? 1 : v;
+        }
+      },
+      requestAnimFrame = function() {
+        return window.requestAnimationFrame ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame ||
+          window.oRequestAnimationFrame ||
+          window.msRequestAnimationFrame ||
+          function(callback) {
+            window.setTimeout(callback, 1000 / 60);
+          };
+      }();
+
+    settings.beforeDraw.call($this);
+
+    var $svg = $('<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>').appendTo($this),
+        $paths = [],
+        easingFunction = animationOptions[settings.animationEasing],
+        doughnutRadius = Min([H / 2,W / 2]) - settings.edgeOffset,
+        cutoutRadius = doughnutRadius * (settings.percentageInnerCutout / 100),
+        segmentTotal = 0;
+	var partsTotal = 0;
+    //Draw base doughnut
+    var baseDoughnutRadius = doughnutRadius + settings.baseOffset,
+        baseCutoutRadius = cutoutRadius - settings.baseOffset;
+    $(document.createElementNS('http://www.w3.org/2000/svg', 'path'))
+      .attr({
+        "d": getHollowCirclePath(baseDoughnutRadius, baseCutoutRadius),
+        "fill": settings.baseColor
+      })
+      .appendTo($svg);
+
+    //Set up pie segments wrapper
+    var $pathGroup = $(document.createElementNS('http://www.w3.org/2000/svg', 'g'));
+    $pathGroup.attr({opacity: 0}).appendTo($svg);
+
+    //Set up tooltip
+    var $tip = $('<div class="' + settings.tipClass + '" />').appendTo('body').hide(),
+        tipW = $tip.width(),
+        tipH = $tip.height();
+
+    //Set up center text area
+    var summarySize = (cutoutRadius - (doughnutRadius - cutoutRadius)) * 2,
+        $summary = $('<div class="' + settings.summaryClass + '" />')
+                   .appendTo($this)
+                   .css({ 
+                     width: summarySize + "px",
+                     height: summarySize + "px",
+                     "margin-left": -(summarySize / 2) + "px",
+                     "margin-top": -(summarySize / 2) + "px"
+                   });
+    var $summaryTitle = $('<p class="' + settings.summaryTitleClass + '">' + settings.summaryTitle + '</p>').appendTo($summary);
+    var $summaryNumber = $('<p class="' + settings.summaryNumberClass + '"></p>').appendTo($summary).css({opacity: 0});
+
+    for (var i = 0, len = data.length; i < len; i++) {
+    	//console.log(data[i].title);
+    	if(data[i].title == 'Members') {
+    		var segmentMemberTotal = data[i].value;
+    	}
+      	partsTotal += data[i].value;
+		//segmentTotal = (parseInt(segmentMemberTotal) / parseInt(partsTotal)) * 100 ;
+      	segmentTotal += data[i].value;
+      $paths[i] = $(document.createElementNS('http://www.w3.org/2000/svg', 'path'))
+        .attr({
+          "stroke-width": settings.segmentStrokeWidth,
+          "stroke": settings.segmentStrokeColor,
+          "fill": data[i].color,
+          "data-order": i
+        })
+        .appendTo($pathGroup)
+        .on("mouseenter", pathMouseEnter)
+        .on("mouseleave", pathMouseLeave)
+        .on("mousemove", pathMouseMove);
+    }
+	
+	segmentPercent = (parseInt(segmentMemberTotal) / parseInt(partsTotal)) * 100 
+	
+    //Animation start
+    animationLoop(drawPieSegments);
+
+    //Functions
+    function getHollowCirclePath(doughnutRadius, cutoutRadius) {
+        //Calculate values for the path.
+        //We needn't calculate startRadius, segmentAngle and endRadius, because base doughnut doesn't animate.
+        var startRadius = -1.570,// -Math.PI/2
+            segmentAngle = 6.2831,// 1 * ((99.9999/100) * (PI*2)),
+            endRadius = 4.7131,// startRadius + segmentAngle
+            startX = centerX + cos(startRadius) * doughnutRadius,
+            startY = centerY + sin(startRadius) * doughnutRadius,
+            endX2 = centerX + cos(startRadius) * cutoutRadius,
+            endY2 = centerY + sin(startRadius) * cutoutRadius,
+            endX = centerX + cos(endRadius) * doughnutRadius,
+            endY = centerY + sin(endRadius) * doughnutRadius,
+            startX2 = centerX + cos(endRadius) * cutoutRadius,
+            startY2 = centerY + sin(endRadius) * cutoutRadius;
+        var cmd = [
+          'M', startX, startY,
+          'A', doughnutRadius, doughnutRadius, 0, 1, 1, endX, endY,//Draw outer circle
+          'Z',//Close path
+          'M', startX2, startY2,//Move pointer
+          'A', cutoutRadius, cutoutRadius, 0, 1, 0, endX2, endY2,//Draw inner circle
+          'Z'
+        ];
+        cmd = cmd.join(' ');
+        return cmd;
+    };
+    function pathMouseEnter(e) {
+      var order = $(this).data().order;
+      $tip.text(data[order].title + ": " + data[order].value)
+          .fadeIn(200);
+      settings.onPathEnter.apply($(this),[e,data]);
+    }
+    function pathMouseLeave(e) {
+      $tip.hide();
+      settings.onPathLeave.apply($(this),[e,data]);
+    }
+    function pathMouseMove(e) {
+      $tip.css({
+        top: e.pageY + settings.tipOffsetY,
+        left: e.pageX - $tip.width() / 2 + settings.tipOffsetX
+      });
+    }
+    function drawPieSegments (animationDecimal) {
+      var startRadius = -PI / 2,//-90 degree
+          rotateAnimation = 1;
+      if (settings.animation && settings.animateRotate) rotateAnimation = animationDecimal;//count up between0~1
+
+      drawDoughnutText(animationDecimal, segmentTotal, segmentPercent);
+
+      $pathGroup.attr("opacity", animationDecimal);
+
+      //If data have only one value, we draw hollow circle(#1).
+      if (data.length === 1 && (4.7122 < (rotateAnimation * ((data[0].value / segmentTotal) * (PI * 2)) + startRadius))) {
+        $paths[0].attr("d", getHollowCirclePath(doughnutRadius, cutoutRadius));
+        return;
+      }
+      for (var i = 0, len = data.length; i < len; i++) {
+        var segmentAngle = rotateAnimation * ((data[i].value / segmentTotal) * (PI * 2)),
+            endRadius = startRadius + segmentAngle,
+            largeArc = ((endRadius - startRadius) % (PI * 2)) > PI ? 1 : 0,
+            startX = centerX + cos(startRadius) * doughnutRadius,
+            startY = centerY + sin(startRadius) * doughnutRadius,
+            endX2 = centerX + cos(startRadius) * cutoutRadius,
+            endY2 = centerY + sin(startRadius) * cutoutRadius,
+            endX = centerX + cos(endRadius) * doughnutRadius,
+            endY = centerY + sin(endRadius) * doughnutRadius,
+            startX2 = centerX + cos(endRadius) * cutoutRadius,
+            startY2 = centerY + sin(endRadius) * cutoutRadius;
+        var cmd = [
+          'M', startX, startY,//Move pointer
+          'A', doughnutRadius, doughnutRadius, 0, largeArc, 1, endX, endY,//Draw outer arc path
+          'L', startX2, startY2,//Draw line path(this line connects outer and innner arc paths)
+          'A', cutoutRadius, cutoutRadius, 0, largeArc, 0, endX2, endY2,//Draw inner arc path
+          'Z'//Cloth path
+        ];
+        $paths[i].attr("d", cmd.join(' '));
+        startRadius += segmentAngle;
+      }
+    }
+    function drawDoughnutText(animationDecimal, segmentTotal, segmentPercent) {
+    /*
+      $summaryNumber
+        .css({opacity: animationDecimal})
+        .text((segmentTotal * animationDecimal).toFixed(1));
+    */
+    	$summaryNumber
+        .css({opacity: animationDecimal})
+        .text(Math.ceil((segmentPercent * animationDecimal).toFixed(0)) + '%');
+    }
+    function animateFrame(cnt, drawData) {
+      var easeAdjustedAnimationPercent =(settings.animation)? CapValue(easingFunction(cnt), null, 0) : 1;
+      drawData(easeAdjustedAnimationPercent);
+    }
+    function animationLoop(drawData) {
+      var animFrameAmount = (settings.animation)? 1 / CapValue(settings.animationSteps, Number.MAX_VALUE, 1) : 1,
+          cnt =(settings.animation)? 0 : 1;
+      requestAnimFrame(function() {
+          cnt += animFrameAmount;
+          animateFrame(cnt, drawData);
+          if (cnt <= 1) {
+            requestAnimFrame(arguments.callee);
+          } else {
+            settings.afterDrawed.call($this);
+          }
+      });
+    }
+    function Max(arr) {
+      return Math.max.apply(null, arr);
+    }
+    function Min(arr) {
+      return Math.min.apply(null, arr);
+    }
+    function isNumber(n) {
+      return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+    function CapValue(valueToCap, maxValue, minValue) {
+      if (isNumber(maxValue) && valueToCap > maxValue) return maxValue;
+      if (isNumber(minValue) && valueToCap < minValue) return minValue;
+      return valueToCap;
+    }
+    return $this;
+  };
+

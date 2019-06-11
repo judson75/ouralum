@@ -278,6 +278,11 @@ textarea {
 	background: #0f9fd3;
 }
 
+.btn-danger {
+	background: #CC0000;
+}
+
+
 .page-overlay {
 	background: rgba(0, 0, 0, .5);
 	position: fixed;
@@ -702,6 +707,172 @@ h2.section-title {
 	display: block;
 	padding: 10px;
 	margin: 15px 0;
+}
+
+/* Alum Percentages */
+.chart {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    top: 50%;
+    left: 50%;
+    margin: 0px 0 0 -125px;
+}
+
+.doughnutSummary {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #5b5b5b;
+    text-align: center;
+    cursor: default;
+}
+
+.doughnutSummaryTitle {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    margin-top: -47%;
+    font-size: 18px;
+    letter-spacing: .06em;
+    line-height: 1.2em;
+}
+
+
+.doughnutSummaryNumber {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    margin-top: -10%;
+    font-size: 44px;
+}
+
+.tp-selector h5 {
+	cursor: pointer;
+	font-size: 17px;
+}
+
+.tp-selections {
+	position: absolute;
+	top: 65px;
+	border: 1px solid #0984c4;
+	width: 100%;
+	display: none;
+	z-index: 9;
+	width: 200px;
+}
+
+.tp-selections ul {
+	background: #fff;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	max-height: 200px;
+	overflow-y: auto;
+	
+}
+
+.tp-selections ul li {
+	font-size: 18px;
+	padding: 5px 20px;
+	cursor: pointer;
+	border-bottom: 1px solid #0984c4;
+	white-space: nowrap;
+}
+
+.tp-selections ul li:hover {
+	color: #fff;
+	background: #0984c4;
+}
+
+.tp-selections ul li.active {
+	background: #f1f1f1;
+}
+
+.tp-selections ul li.active:hover {
+	color: #5b5b5b;
+}
+
+.tp-selections ul li:last-child {
+	border-bottom: 0;
+}
+
+.tp-selections:after, .tp-selections:before {
+	bottom: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.tp-selections:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-bottom-color: #fff;
+	border-width: 5px;
+	margin-left: -5px;
+}
+.tp-selections:before {
+	border-color: rgba(51, 122, 183, 0);
+	border-bottom-color: #0984c4;
+	border-width: 6px;
+	margin-left: -6px;
+}
+
+
+#sl123 {
+	width: 52%;
+	float: left;
+	position: relative;
+}
+
+
+#sr123 {
+	width: 46%;
+	float: right;
+	position: relative;
+}
+
+#sr123 h5 {
+	text-align: right;
+}
+
+#tp-block {
+	max-width: 300px;
+	margin: 10px auto;
+}
+
+#tp-block h5 {
+	font-weight: 600;
+}
+#top-p {
+	list-style: none;
+	margin: 10px 0 0 0;
+	padding: 0;
+}
+
+#top-p li {
+	border-bottom: 1px solid #e1e1e1;
+	padding: 10px
+}
+
+.tp-c {
+	display: inline-block;
+	vertical-align: middle;
+	width: 150px;
+	font-size: 13px;
+}
+
+.tp-p {
+	font-weight: 600;
+	font-family: 'Oxygen', sans-serif;
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 26px;
+	width: calc(100% - 150px);
+	text-align: right;
 }
 
 .alum-post-avatar {
@@ -1385,7 +1556,7 @@ h3.timeline-title {
 		text-overflow: ellipsis;
 	}
 	
-	#upload-photo-page div[data-role='header'] h2 {
+	#upload-photo-page div[data-role=header] h2 {
 		width: 300px;
 		white-space: nowrap;
 		overflow: hidden;
