@@ -474,8 +474,7 @@ function onError(contactError) {
 			//alert("INIT YEAR: " + initiation_year);
 			//set it...
 			init_year = getStorage('oa_init_year');
-			//alert("INIT YEAR: " + init_year);
-			if(init_year == '' || init_year == null || init_year == undefined || init_year == false) {
+			if(init_year == '' || init_year == null || init_year == undefined || init_year == 'undefined' || init_year == false) {
 				setStorage('oa_init_year', initiation_year);
 				init_year = getStorage('oa_init_year');  
 			}
@@ -485,10 +484,10 @@ function onError(contactError) {
 		//alert("INIT YEAR: " + init_year );
 
 		var url = serviceURL + 'alumn';
-		if(init_year != '' && init_year != null && init_year != undefined && init_year != false) {
+		if(init_year != '' && init_year != null && init_year !== undefined && init_year !== 'undefined' && init_year != false) {
 			url += '?init_year=' + init_year;
 		}
-		//alert("URL: " + url);
+		//alert("URL: " + url + '&id=' + id);
 
 		var request = $.ajax({
 			url: url,
@@ -1697,6 +1696,7 @@ function onError(contactError) {
 		
 	$(document).on('click', '#tp-type li', function() {
 		//var val = $(this).data('val');
+		
 		$('#tp-type li').removeClass('active');
 		$(this).addClass('active');
 		var init_year = $(this).data('init');	
@@ -2515,7 +2515,7 @@ function onError(contactError) {
 	}
 	
 	function redrawDonut(init_year, type, group_id, year) {
-	
+		$.mobile.loading( "show", { theme: "a", text: "Getting Info", textVisible: true} );
 	//alert("INIT YEAR: " + init_year + " - YEAR: " + year + " - TYPE: " + type + " - GROUP: " +  group_id);
 		$('#dc-alert').remove();
 		var request = $.ajax({
@@ -2533,6 +2533,7 @@ function onError(contactError) {
 			obj = $.parseJSON( data );
 			//alert(obj.code); 
 			if(obj.data.list_html  === '') {
+				$.mobile.loading( "hide" );
 				$('#tp-block').prepend('<div id="dc-alert" class="alert alert-info">No members for this selection</div>');
 				return false;
 			}
@@ -2560,6 +2561,7 @@ function onError(contactError) {
 					$('#doughnutChart').html(html);		
 				}
 			}
+			$.mobile.loading( "hide" );
 		});
 
 
