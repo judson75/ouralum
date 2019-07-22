@@ -285,7 +285,7 @@ function onError(contactError) {
 				setTimeout(function(){
 					$('.alert-popup').fadeOut('slow', function() { $(this).remove(); });
 				}, 2000);
-	
+				
 			}
 			else {
 				//show error
@@ -460,14 +460,20 @@ function onError(contactError) {
 	//event.preventDefault();
 	//$(document).on('pageinit', '#alumn-page', function(){
 	$(document).on( "pageshow", "#alumn-page", function(event) {
+		//alert(window.location.href);
 		$.mobile.loading( "show", { theme: "a", text: "Getting Alumn Info", textVisible: true} );
 		//$('#alumn').html('');
 		var id = getUrlParameter('id');
+		var msg = getStorage('oa_msg');
+		var err = getStorage('oa_msg');
 		var user_id = getStorage('oa_user_id');
 		//get and set users alum year...
 		var user_data = getUserData(user_id);
 		var init_year = '';
-		//alert("DATA: " + user_data.data);
+//alert("ID: " + id);
+//alert("MSG: " + msg);
+//alert("DATA: " + user_data.data.initiation_year);
+
 		if(user_data != '' && user_data != undefined) {
 			//alert("DAT2: " + user_data.data.initiation_year);
 			var initiation_year = user_data.data.initiation_year;
@@ -487,7 +493,7 @@ function onError(contactError) {
 		if(init_year != '' && init_year != null && init_year !== undefined && init_year !== 'undefined' && init_year != false) {
 			url += '?init_year=' + init_year;
 		}
-		//alert("URL: " + url + '&id=' + id);
+//alert("URL: " + url + '&id=' + id);
 
 		var request = $.ajax({
 			url: url,
@@ -667,8 +673,8 @@ function onError(contactError) {
 					var min_year = parseInt(y) - 100;
 					for (var i = y; i >= min_year; i--){
 						html += '<option value="' + i + '"';
-						if(i === init_year) {
-							html += ' selected';	
+						if(i == init_year) {
+							html += ' selected="selected"';	
 						}
 						html += '>' + i + '</option>';
 					}
@@ -821,6 +827,14 @@ function onError(contactError) {
 					$.mobile.loading( "hide" );
 				}, 200);
 				
+				if(msg != '' && msg != undefined && msg != null && msg != 'null') {
+					$('body').prepend('<div class="alert-popup alert-info">' + msg + '</div>');
+					setTimeout(function(){
+						$('.alert-popup').fadeOut('slow', function() { $(this).remove(); });
+					}, 2000);
+					//unset it
+					deleteStorage('oa_msg');
+				}
 			}
 			else {
 				//show error
@@ -1473,8 +1487,8 @@ function onError(contactError) {
 		var group = getUrlParameter('group');
 		var name = getUrlParameter('name');
 		var member_name = getUrlParameter('name');
-		var email = getUrlParameter('email');
-		var phone = getUrlParameter('phone');
+		var email = (getUrlParameter('email') != null && getUrlParameter('email') != 'null') ? getUrlParameter('email') : '';
+		var phone = (getUrlParameter('phone') != null && getUrlParameter('phone') != 'null') ? getUrlParameter('phone') : '';
 		//id=' + member.id + '&user="' + user_id + '&group=' + id + '&name=' + member.first_name + ' ' + member.last_name +'
 		$('#invite-member-frm input[name="group_id"]').val(group);
 		$('#invite-member-frm input[name="member_id"]').val(id);
@@ -1620,7 +1634,7 @@ function onError(contactError) {
 		$('input[name="photo"]').parent().removeClass('hasError');
 	});
 	
-	$(document).on('click touchstart', '.submitInvite', function () {
+	$(document).on('click', '.submitInvite', function () {
 		//$.mobile.loading( "show" );
 		//alert("G");
 		$('div').removeClass('hasError');
@@ -1657,23 +1671,20 @@ function onError(contactError) {
 		});
 		 
 		request.done(function( data ) {
-			//alert(data);
+			//alert("D: " + data);
 			obj = $.parseJSON( data );
 			if(obj.code === 1) {
-				//
-				$('#invite-member-frm input["member_id"]').val();
-				var user_id = $('#invite-member-frm input["user_id"]').val();
-				var group_id = $('#invite-member-frm input["group_id"]').val();
-				var email_address = $('#invite-member-frm input["email_address"]').val();
-				var phone = $('#invite-member-frm input["phone"]').val();
-			//	hideModal('invite-member');
-				$.mobile.changePage('alumn.html', { transition: "slide", changeHash: false, reverse: true } );
+				$.mobile.loading( "hide" );
+				//&msg=
+				setStorage('oa_msg', 'Invitation Sent');
+				$.mobile.changePage('alumn.html?id=' + group_id + '', { transition: "slide", changeHash: true, reverse: true } );
 			}
 			else {
 				//show error
-				
+				//&err=There was an error
+				setStorage('oa_err', 'There was an error');
+				$.mobile.changePage('alumn.html?id=' + group_id + '', { transition: "slide", changeHash: true, reverse: true } );				
 			}
-			$.mobile.changePage('alumn.html', { transition: "slide", changeHash: false, reverse: true } );
 		});
 		
 	});
@@ -2201,13 +2212,16 @@ function onError(contactError) {
 			obj = $.parseJSON( data );
 			if(obj.code === 1) {
 				//
+				//alert("INIT: " + obj.data.initiation_date);				
+		//return obj;
 			}
 			else {
 				//show error
-				
 			}
 		});
 		return obj;
+
+		
 	}
 
 	
@@ -2403,11 +2417,8 @@ function onError(contactError) {
 	function buildMembersTable(id, user_id, member) {
 		var td = '';
 		var location = (member.city !== '' && member.city !== null) ? member.city + ', ' + member.state : '';
-		//alert("ID: " + id + " - USER: " + user_id);
-		//alert(JSON.stringify(member));
-		//exit;
-		//var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<a href="javascript:void(0);" class="btn btn-sm sendInviteBtn" data-id="' + member.id + '" data-user="' + user_id + '" data-group="' + id + '" data-name="' + member.first_name + ' ' + member.last_name +'" style="margin-top: 12px;">Send Invite</a>';
 		var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? member.claimed_profile : '<a href="send-invite.html?id=' + member.id + '&user=' + user_id + '&group=' + id + '&name=' + member.first_name + ' ' + member.last_name +'&email=' + member.email + '&phone=' + member.phone + '" class="btn btn-sm" style="margin-top: 12px;" data-transition="slidedown">Send Invite</a>';
+		//var claimed_profile = '<a href="send-invite.html?id=' + member.id + '&user=' + user_id + '&group=' + id + '&name=' + member.first_name + ' ' + member.last_name +'&email=' + member.email + '&phone=' + member.phone + '" class="btn btn-sm" style="margin-top: 12px;" data-transition="slidedown">Send Invite</a>';
 		td += '<tr><td nowrap><a href="member.html?id=' + member.id + '" data-role="none" data-transition="slide">';
 		if(member.avatar !== '' && member.avatar !== undefined && member.avatar !== null) {
 			td += '<div class="member-table-avatar">' + member.avatar + '</div>';
