@@ -107,7 +107,7 @@ ul {
 #logo img {
 	max-width: 200px;
 	height: auto;
-	margin: 10px auto;
+	margin: 15px auto;
 }
 
 #header-right {
@@ -408,6 +408,10 @@ textarea {
 	transition: opacity 0.6s;
 	margin-bottom: 15px;
 	text-shadow: none;
+}
+
+.alert a {
+	color: #fff;
 }
 
 .alert-success {
@@ -1068,6 +1072,80 @@ h2.section-title {
 }
 
 #search_results_preview ul li { margin: 10px 0; }
+
+.table-search { position: relative; }
+#member-search-results { 
+	display: none; 
+	position: absolute; 
+	z-index: 9; 
+	background: #fff; 
+	border: 1px solid #ccc; 
+	border-top: 0; 
+	top: 59.5px; 
+	left: 12px; 
+	width: 305px; 
+	max-height: 380px;
+	overflow-y: scroll;
+}
+
+#member-search-results ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.member-search-total { padding: 6px 10px; }
+.member-result { 
+	padding: 6px 10px;
+}
+
+#member-search-clr {
+	position: absolute;
+	font-size: 20px;
+	color: #999;
+	right: 10px;
+	padding: 5px;
+	top: 22px;
+	z-index: 10;
+}
+.res-member-avatar {
+	height: 30px;
+	width: 30px;
+	margin-right: 6px;
+	display: inline-block;
+	vertical-align: top;
+	border: 1px solid #0984c4;
+	border-radius: 50%;
+	overflow: hidden;
+ }
+
+ .res-member-avatar img {
+	height: 30px;
+	width: 30px;
+ }
+.res-member-name { 
+	display: inline-block;
+	vertical-align: middle;
+	font-weight: bold;
+	font-size: 16px;
+}
+.res-member-location {
+
+ }
+.res-member-init {
+	display: inline-block;
+	vertical-align: middle;
+	font-weight: normal;
+	font-size: 12px;
+	color: #666;
+	margin-left: 8px;
+ }
+.res-claim { }
+
+
+.member-table-avatar {
+	
+}
 
 .sr-img {
 	width: 40px;

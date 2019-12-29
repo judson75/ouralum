@@ -302,6 +302,7 @@ function onError(contactError) {
 	
 	$(document).on( "click", ".loginBtn", function() {
 		$.mobile.loading( "show", { theme: "a", text: "", textVisible: true} );
+		$('.alert-error').remove();
 		var username = $('#user_name').val();
 		var password = $('#user_password').val();
 		//ajax for login...
@@ -323,25 +324,17 @@ function onError(contactError) {
 				$('#alum-list').show();
 				$('#logoutFixed').show();
 				getAlumnsPage(obj.data.user_id);
-				
-				/*
-				
-				$.mobile.changePage( "alumns.html");
-				
-				
-				
-	        	//$('#home-buttons').show();
-				//what, go to alums page
-				
-				$('#alum-list').show();
-				$('#logoutFixed').show();
-				var token = getStorage('registrationId');
-	            setUserToken(obj.data.user_id, token);
-	            $.mobile.loading( "hide" );
-				*/
 			}
 			else {
 				//show error
+				//alert(obj.data);
+				//obj.data = obj.data.replace('', '');
+				if(obj.data.indexOf('Invalid email') !== -1) {
+					obj.data = 'Invalid email address';
+				}
+				else if(obj.data.indexOf('Invalid password') !== -1) {
+					obj.data = 'Invalid password';
+				}
 				$('#login-form').prepend('<div class="alert alert-error"><span class="closebtn"><i class="fa fa-close"></i></span>' + obj.data + '</div>');
 			}
 			$.mobile.loading( "hide" );
@@ -680,13 +673,16 @@ function onError(contactError) {
 					}
 					html += '</select>';
 					html += '</div>';
-					html += '<div class="table-search"><b>Search:</b> <input type="text" name="member_search"></div>';
+					html += '<div class="table-search"><b>Search:</b> <input type="text" name="member_search">';
+					html += '<div id="member-search-results"></div>';
+					html += '</div>';
 					html += '<small>(D) = Deceased</small>';
 					html += '<div class="responsive-table" id="members-table-container">'; //members-table-container
 					html += '<div class="table-results-count">' + obj.data.members.total_members + ' Members Found</div>';
 					html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
 					var t = '';
 					$.each( obj.data.members.data , function( key, member ) {
+						/*alert(member);*/
 						t += buildMembersTable(id, user_id, member);
 						/*
 						var location = (member.city !== '' && member.city !== null) ? member.city + ', ' + member.state : '';
@@ -1646,15 +1642,17 @@ function onError(contactError) {
 		var email_address = $('#invite-member-frm input[name="email_address"]').val();
 		var phone = $('#invite-member-frm input[name="phone"]').val();
 		var err_count = 0;
-		if($('#invite-member-frm input[name="email_address"]').val() === '') {
-			$('#invite-member-frm input[name="email_address"]').parent().addClass('hasError');
-			$('#invite-member-frm input[name="email_address"]').after('<div class="helper error">Please enter an email address</div>');
-			err_count++;
-		}
-		if($('#invite-member-frm input[name="phone"]').val() === '') {
-			$('#invite-member-frm input[name="phone"]').parent().addClass('hasError');
-			$('#invite-member-frm input[name="phone"]').after('<div class="helper error">Please enter a phone number</div>');
-			err_count++;
+		if($('#invite-member-frm input[name="email_address"]').val() === '' && $('#invite-member-frm input[name="phone"]').val() === '') {
+			if($('#invite-member-frm input[name="email_address"]').val() === '') {
+				$('#invite-member-frm input[name="email_address"]').parent().addClass('hasError');
+				$('#invite-member-frm input[name="email_address"]').after('<div class="helper error">Please enter an email address</div>');
+				err_count++;
+			}
+			if($('#invite-member-frm input[name="phone"]').val() === '') {
+				$('#invite-member-frm input[name="phone"]').parent().addClass('hasError');
+				$('#invite-member-frm input[name="phone"]').after('<div class="helper error">Please enter a phone number</div>');
+				err_count++;
+			}
 		}
 		if(err_count > 0) {
 			$('#invite-member-frm').prepend('<div id="form-error" class="alert alert-error">Please fix errors and resubmit</div>');
@@ -1820,19 +1818,27 @@ function onError(contactError) {
 		});
 	});
 	
+	$(document).on('focus', 'input[name="member_search"]', function() {
+		$('html,body').animate({
+		scrollTop: $('#alum-members').offset().top
+		}, 200);
+		return false;
+	});
+
 	$(document).on('keyup', 'input[name="member_search"]', function() {
 		//search using new filter...
 		var user_id = getStorage('oa_user_id');
 		var id = getUrlParameter('id');
 		var init_year = $('#member_tableFilter_init').val();
 		var search_str = $(this).val();
-		//if(search_str.length > 3) {
+		if(search_str.length > 1) {
 			$.mobile.loading( "show", { theme: "a", text: "Searching", textVisible: true} );
+			$('.table-search').append('<span id="member-search-clr"><i class="fa fa-times"></i></span>');
 			//alert(id);
 			var request = $.ajax({
 				url: serviceURL + 'members',
 			  	method: "GET",
-			  	data: { id : id, init_year: init_year, search_str: search_str },
+			  	data: { id : id, search_str: search_str },
 			  	dataType: "html"
 			});
 			request.done(function( data ) {
@@ -1840,14 +1846,36 @@ function onError(contactError) {
 				var obj = $.parseJSON( data );
 				if(obj.msg === 'success') {
 					var html = '';
-					html += '<div class="table-results-count">' + obj.total_members + ' Members Found</div>';
-					html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
+					//html += '<div class="table-results-count">' + obj.total_members + ' Members Found</div>';
+					html += '<ul>';
+					//html += '<table class="table" id="membersTable"><thead><tr><th>Member</th><th>Claimed Prof.</th></tr></thead><tbody>';
 					if(obj.data !== '' && obj.data !== null && obj.data !== undefined) {
+						html += '<li class="member-search-total">' + obj.total_members + ' Members Found</li>';
 						var t = '';
 						$.each( obj.data, function( key, member ) { 
 							//alert(member.id);
-							t += buildMembersTable(id, user_id, member);			
+							//alert(member);
+							//t += buildMembersTable(id, user_id, member);
+							var location = (member.city !== '' && member.city !== null) ? member.city + ', ' + member.state : '';
+							var claimed_profile = (member.claimed_profile !== '' && member.claimed_profile !== null && member.claimed_profile !== undefined) ? '' : '<a href="send-invite.html?id=' + member.id + '&user=' + user_id + '&group=' + id + '&name=' + member.first_name + ' ' + member.last_name +'&email=' + member.email + '&phone=' + member.phone + '" class="btn btn-sm" style="margin-top: 6px;" data-transition="slidedown">Send Invite</a>';
+							t += '<li class="member-result" data-id="' + id + '" data-user="' + user_id + '" data-memberid="' + member.id + '">';
+							//t += '<tr><td nowrap><a href="member.html?id=' + member.id + '" data-role="none" data-transition="slide">';
+							if(member.avatar !== '' && member.avatar !== undefined && member.avatar !== null) {
+								t += '<span class="res-member-avatar">' + member.avatar + '</span>';
+							}
+							t += '<span class="res-member-name"><a href="member.html?id=' + member.id + '">' + member.first_name + ' ' + member.last_name + '</a>';
+							if(member.deceased === true) {
+								t += ' <small>(D)</small>';
+							}
+							t += '<span class="res-member-init">' + member.init_date_format + '</span>';
+							t += '</span>';
+							//t += '<span class="res-member-location">' + location + '</span>';
+							t += '<span class="res-claim">' + claimed_profile + '</span>';
+							t += '</li>';			
 						});
+						html += t;
+						html += '</ul>';
+						/*
 						html += t; 
 						html += '</tbody><table>';
 						html += '<div class="table-results-pagination">';
@@ -1873,9 +1901,13 @@ function onError(contactError) {
 	
 						//alert(html);
 						$('#members-table-container').html(html);
+						*/
+						$('#member-search-results').html(html).show();
 					}
 					else {
-						alert("No Results");
+						//alert("No Results");
+						html += 'No Results';
+						$('#member-search-results').html(html).show();
 					}
 					$.mobile.loading( "hide" );
 				}
@@ -1890,10 +1922,30 @@ function onError(contactError) {
 			  	alert( "Request failed Line 1169: " + textStatus + " - " + jqXHR.responseText);
 			  	$.mobile.loading( "hide" );
 			});
-	//	}
+		}
+		else {
+			$.mobile.loading( "hide" );
+			$('#member-search-results').html('').hide();
+			$('#member-search-clr').remove();
+		}
 	});
 	
+
+	$(document).on('click', '.member-result', function() {
+		$.mobile.loading( "hide" );
+		$('#member-search-results').html('').hide();
+		$('#member-search-clr').remove();
+	});
+
+	$(document).on('click', '#member-search-clr', function() {
+		$.mobile.loading( "hide" );
+		$('#member-search-results').html('').hide();
+		$('#member-search-clr').remove();
+		$('input[name="member_search"]').val('');
+		$('input[name="member_search"]').focus();
+	});
 	
+
 	$(document).on('click', '.goToMPage', function() {
 		//search using new filter...
 		var user_id = getStorage('oa_user_id');
